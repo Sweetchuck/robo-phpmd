@@ -47,12 +47,12 @@ _custom:
         <<: *job_defaults
         steps:
             - 'checkout'
-#            -
-#                run:
-#                    <<: *run_upgrade_git
-#            -
-#                run:
-#                    <<: *run_install_php_extensions
+            -
+                run:
+                    <<: *run_upgrade_git
+            -
+                run:
+                    <<: *run_install_php_extensions
             -
                 run:
                     <<: *run_install_composer
