@@ -1,0 +1,48 @@
+{
+    "name": "sweetchuck/robo-phpmd",
+    "description": "Template to create a new Robo task.",
+    "license": "GPL-2.0",
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.1",
+        "consolidation/robo": "^1.0",
+        "phpmd/phpmd": "^2.6"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.2",
+        "danielstjules/stringy": "^3.0",
+        "sweetchuck/codeception-module-robo-task-runner": "^0.0",
+        "sweetchuck/git-hooks": "^0.0",
+        "sweetchuck/robo-git": "^0.0",
+        "sweetchuck/robo-phpcs": "^0.0",
+        "symfony/finder": "^3.2",
+        "symfony/yaml": "^3.2",
+        "webmozart/path-util": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sweetchuck\\Robo\\PhpMessDetector\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sweetchuck\\Robo\\PhpMessDetector\\Composer\\": "src-dev/Composer/",
+            "Sweetchuck\\Robo\\PhpMessDetector\\Test\\Helper\\": "tests/_support/Helper/",
+            "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Acceptance\\": "tests/acceptance/",
+            "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Unit\\": "tests/unit/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "\\Sweetchuck\\Robo\\PhpMessDetector\\Composer\\Scripts::postInstallCmd"
+        ],
+        "post-update-cmd": [
+            "\\Sweetchuck\\Robo\\PhpMessDetector\\Composer\\Scripts::postUpdateCmd"
+        ]
+    }
+}
