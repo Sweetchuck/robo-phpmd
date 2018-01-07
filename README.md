@@ -1,24 +1,28 @@
-# Project template to create a new Robo task
+# Robo task wrapper for PHPMD (PHP Mess Detector)
 
-[![Build Status](https://travis-ci.org/Sweetchuck/robo-template-task.svg?branch=master)](https://travis-ci.org/Sweetchuck/robo-template-task)
-[![codecov](https://codecov.io/gh/Sweetchuck/robo-template-task/branch/master/graph/badge.svg)](https://codecov.io/gh/Sweetchuck/robo-template-task)
+[![CircleCI](https://circleci.com/gh/Sweetchuck/robo-phpmd.svg?style=svg)](https://circleci.com/gh/Sweetchuck/robo-phpmd)
+[![codecov](https://codecov.io/gh/Sweetchuck/robo-phpmd/branch/master/graph/badge.svg)](https://codecov.io/gh/Sweetchuck/robo-phpmd)
 
-@todo
+## Usage
 
+```php
+<?php
 
-Requirements
-------------
+use Robo\Tasks;
+use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
 
-@todo
+class RoboFile extends Tasks
+{
+    use PhpmdTaskLoader;
 
-
-Usage
------
-
-1. Run `cd some-where` (Something like "~/Documents/Composer/vendor")
-1. Run `composer create-project --stability=dev sweetchuck/robo-template-task my-vendor/robo-my-action`
-   
-   The `my-vendor` and the `robo-my-action` are custom names, so you can choice whatever you want,
-   but the project name (robo-my-action) should be prefixed with `robo-`.
-1. Answer the questions in the terminal.
-1. Run `cd my-vendor/robo-my-action`
+    public function phpmd()
+    {
+        return $this
+            ->taskPhpmdLintFiles()
+            ->setPaths(['src/', 'tests/'])
+            ->setExcludePaths(['src/foo.php'])
+            ->setReportFormat('text')
+            ->setRuleSetFileNames(['path/to/custom.xml']);
+    }
+}
+```
