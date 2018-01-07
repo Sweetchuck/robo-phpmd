@@ -447,7 +447,7 @@ class RoboFile extends Tasks
     {
         return $this
             ->taskPhpmdLintFiles()
-            ->addPathsFromFile('./rulesets/custom.include-pattern.txt')
+            ->setInputFile('./rulesets/custom.include-pattern.txt')
             ->addExcludePathsFromFile('./rulesets/custom.exclude-pattern.txt')
             ->setRuleSetFileNames(['custom'])
             ->setOutput($this->output());
