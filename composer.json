@@ -11,11 +11,13 @@
     "require": {
         "php": ">=7.1",
         "consolidation/robo": "^1.0",
-        "phpmd/phpmd": "^2.6"
+        "phpmd/phpmd": "^2.6",
+        "symfony/process": "^3.2"
     },
     "require-dev": {
         "codeception/codeception": "^2.2",
         "danielstjules/stringy": "^3.0",
+        "mikey179/vfsStream": "^1.6",
         "sweetchuck/codeception-module-robo-task-runner": "^0.0",
         "sweetchuck/git-hooks": "^0.0",
         "sweetchuck/robo-git": "^0.0",

@@ -179,17 +179,6 @@ abstract class PhpmdLintTask extends RoboBaseTask implements
 
         return $this;
     }
-
-    /**
-     * @return $this
-     */
-    public function addPathsFromFile(string $fileName)
-    {
-        $lines = array_map('trim', file($fileName));
-        $this->paths = array_fill_keys(array_filter($lines), true) + $this->paths;
-
-        return $this;
-    }
     // endregion
 
     // region reportFormat
@@ -576,7 +565,7 @@ abstract class PhpmdLintTask extends RoboBaseTask implements
                     $this->setReportFile($value);
                     break;
 
-                case 'reportFileHTML':
+                case 'reportFileHtml':
                     $this->setReportFileHtml($value);
                     break;
 
@@ -837,7 +826,7 @@ abstract class PhpmdLintTask extends RoboBaseTask implements
                 'value' => $this->getInputFile(),
             ],
             'coverage' => [
-                'type' => 'option:value',
+                'type' => 'option:flag',
                 'value' => $this->getCoverage(),
             ],
             'reportFile' => [
@@ -846,14 +835,17 @@ abstract class PhpmdLintTask extends RoboBaseTask implements
             ],
             'reportFileHtml' => [
                 'type' => 'option:value',
+                'name' => 'reportfile-html',
                 'value' => $this->getReportFileHtml(),
             ],
             'reportFileText' => [
                 'type' => 'option:value',
+                'name' => 'reportfile-text',
                 'value' => $this->getReportFileText(),
             ],
             'reportFileXml' => [
                 'type' => 'option:value',
+                'name' => 'reportfile-xml',
                 'value' => $this->getReportFileXml(),
             ],
             'suffixes' => [
