@@ -3,8 +3,12 @@
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
 use Codeception\Test\Unit;
+use Codeception\Util\Stub;
 use org\bovigo\vfs\vfsStream;
+use Robo\Robo;
+use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
+use Webmozart\PathUtil\Path;
 
 class PhpmdTaskTest extends Unit
 {
@@ -136,5 +140,82 @@ class PhpmdTaskTest extends Unit
             "phpmd 'text' --exclude 'src/,a,b,c,d'",
             $task->getCommand()
         );
+    }
+
+    public function casesRunSuccess(): array
+    {
+        $vfs = vfsStream::setup(
+            'root',
+            0777,
+            [
+                __FUNCTION__ => [],
+            ]
+        );
+
+        return [
+            'basic' => [
+                [
+                    'exitCode' => 0,
+                ],
+                [
+                    'workingDirectory' => $vfs->url(),
+                    'reportFile' => __FUNCTION__ . '/basic/foo/phpmd.txt',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider casesRunSuccess
+     */
+    public function testRunSuccess(array $expected, array $options)
+    {
+        $container = Robo::createDefaultContainer();
+        Robo::setContainer($container);
+
+        /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask $task */
+        $task = Stub::construct(
+            PhpmdLintFilesTask::class,
+            [],
+            [
+                'processClass' => DummyProcess::class,
+            ]
+        );
+        $task->setOptions($options);
+
+        $processIndex = count(DummyProcess::$instances);
+        DummyProcess::$prophecy[$processIndex] = [
+            'exitCode' => 0,
+            'stdOutput' => '',
+            'stdError' => '',
+        ];
+
+        $result = $task->run();
+
+        $this->tester->assertEquals(
+            $expected['exitCode'],
+            $result->getExitCode(),
+            'Result "exitCode"'
+        );
+
+        $workingDirectory = $options['workingDirectory'] ?? '.';
+        $reportFileOptions = [
+            'reportFile',
+            'reportFileHtml',
+            'reportFileText',
+            'reportFileXml',
+        ];
+        foreach ($reportFileOptions as $reportFileOption) {
+            if (empty($options[$reportFileOption])) {
+                continue;
+            }
+
+            $fileName = Path::join($workingDirectory, $options[$reportFileOption]);
+            $dirName = Path::getDirectory($fileName);
+            $this->tester->assertFileExists(
+                $dirName,
+                "Directory is prepared for file; '$reportFileOption' =  '$fileName'"
+            );
+        }
     }
 }
