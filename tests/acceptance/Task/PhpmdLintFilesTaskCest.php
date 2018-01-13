@@ -7,7 +7,7 @@ use Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles\PhpmdRoboFile;
 
 class PhpmdLintFilesTaskCest
 {
-    public function runList(AcceptanceTester $tester)
+    public function runPhpmdLintFiles(AcceptanceTester $tester)
     {
         $id = 'lintFiles';
         $tester->runRoboTask(
