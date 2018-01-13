@@ -8,11 +8,30 @@
 
     <description>Custom rule set for sweetchuck/robo-phpmd package.</description>
 
-    <rule ref="rulesets/cleancode.xml" />
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag"/>
+        <exclude name="StaticAccess"/>
+    </rule>
 
     <rule ref="rulesets/codesize.xml">
+        <exclude name="CyclomaticComplexity"/>
         <exclude name="ExcessivePublicCount"/>
         <exclude name="TooManyFields"/>
+    </rule>
+    <rule name="CodeSize.CyclomaticComplexity"
+        since="0.1"
+        message="The {0} {1}() has a Cyclomatic Complexity of {2}. The configured cyclomatic complexity threshold is {3}."
+        class="\PHPMD\Rule\CyclomaticComplexity"
+        externalInfoUrl="http://phpmd.org/rules/codesize.html#cyclomaticcomplexity">
+        <priority>3</priority>
+        <properties>
+            <property name="reportLevel" value="18"
+                description="The Cyclomatic Complexity reporting threshold"/>
+            <property name="showClassesComplexity" value="true"
+                description="Indicate if class average violation should be added to the report"/>
+            <property name="showMethodsComplexity" value="true"
+                description="Indicate if class average violation should be added to the report"/>
+        </properties>
     </rule>
     <rule name="CodeSize.ExcessivePublicCount"
         since="0.1"
@@ -20,9 +39,8 @@
         class="PHPMD\Rule\ExcessivePublicCount"
         externalInfoUrl="http://phpmd.org/rules/codesize.html#excessivepubliccount">
         <description>
-            A large number of public methods and attributes declared in a class can indicate
-            the class may need to be broken up as increased effort will be required to
-            thoroughly test it.
+            A large number of public methods and attributes declared in a class can indicate the class may need to be
+            broken up as increased effort will be required to thoroughly test it.
         </description>
         <priority>50</priority>
         <properties>
@@ -30,15 +48,14 @@
         </properties>
     </rule>
     <rule name="CodeSize.TooManyFields"
-          since="0.1"
-          message="The {0} {1} has {2} fields. Consider redesigning {1} to keep the number of fields under {3}."
-          class="PHPMD\Rule\Design\TooManyFields"
-          externalInfoUrl="http://phpmd.org/rules/codesize.html#toomanyfields">
+        since="0.1"
+        message="The {0} {1} has {2} fields. Consider redesigning {1} to keep the number of fields under {3}."
+        class="PHPMD\Rule\Design\TooManyFields"
+        externalInfoUrl="http://phpmd.org/rules/codesize.html#toomanyfields">
         <description>
-            Classes that have too many fields could be redesigned to have fewer fields,
-            possibly through some nested object grouping of some of the information. For
-            example, a class with city/state/zip fields could instead have one Address
-            field.
+            Classes that have too many fields could be redesigned to have fewer fields, possibly through some nested
+            object grouping of some of the information. For example, a class with city/state/zip fields could instead
+            have one Address field.
         </description>
         <priority>3</priority>
         <properties>
@@ -46,9 +63,9 @@
         </properties>
     </rule>
 
-    <rule ref="rulesets/controversial.xml" />
+    <rule ref="rulesets/controversial.xml"/>
 
-    <rule ref="rulesets/design.xml" />
+    <rule ref="rulesets/design.xml"/>
 
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable"/>
@@ -60,8 +77,8 @@
         externalInfoUrl="http://phpmd.org/rules/naming.html#shortvariable">
         <priority>3</priority>
         <properties>
-            <property name="minimum" value="3" description="Minimum length for a variable, property or parameter name" />
-            <property name="exceptions" value="id,cb" />
+            <property name="minimum" value="3" description="Minimum length for a variable, property or parameter name"/>
+            <property name="exceptions" value="id,cb"/>
         </properties>
     </rule>
     <rule name="Naming.LongVariable"
@@ -69,9 +86,9 @@
         class="\PHPMD\Rule\Naming\LongVariable"
         externalInfoUrl="http://phpmd.org/rules/naming.html#longvariable">
         <properties>
-            <property name="maximum" value="25" />
+            <property name="maximum" value="25"/>
         </properties>
     </rule>
 
-    <rule ref="rulesets/unusedcode.xml" />
+    <rule ref="rulesets/unusedcode.xml"/>
 </ruleset>

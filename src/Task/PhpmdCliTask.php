@@ -253,7 +253,6 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
     protected function findPhpmdExecutable(): string
     {
         $suggestions = [
-            dirname($_SERVER['argv'][0]) . '/phpmd',
             'vendor/bin/phpmd',
             'bin/phpmd',
         ];
