@@ -3312,16 +3312,16 @@
         },
         {
             "name": "sweetchuck/codeception-module-robo-task-runner",
-            "version": "v0.0.2",
+            "version": "v0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/codeception-module-robo-task-runner.git",
-                "reference": "8c69d9e230753d0324f380ff6beb83dd69454c24"
+                "reference": "5251aca23291e02c341332e8baeb78759320d6f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/codeception-module-robo-task-runner/zipball/8c69d9e230753d0324f380ff6beb83dd69454c24",
-                "reference": "8c69d9e230753d0324f380ff6beb83dd69454c24",
+                "url": "https://api.github.com/repos/Sweetchuck/codeception-module-robo-task-runner/zipball/5251aca23291e02c341332e8baeb78759320d6f6",
+                "reference": "5251aca23291e02c341332e8baeb78759320d6f6",
                 "shasum": ""
             },
             "require": {
@@ -3343,7 +3343,7 @@
                 "GPL-2.0"
             ],
             "description": "Runs a Robo task.",
-            "time": "2017-11-26T11:36:57+00:00"
+            "time": "2018-01-13T14:32:23+00:00"
         },
         {
             "name": "sweetchuck/git-hooks",
