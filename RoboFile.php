@@ -142,7 +142,8 @@ class RoboFile extends Tasks
         return $this
             ->collectionBuilder()
             ->addTask($this->taskComposerValidate())
-            ->addTask($this->getTaskPhpcsLint());
+            ->addTask($this->getTaskPhpcsLint())
+            ->addTask($this->getTaskPhpmdLint());
     }
 
     public function lintPhpcs(): CollectionBuilder
