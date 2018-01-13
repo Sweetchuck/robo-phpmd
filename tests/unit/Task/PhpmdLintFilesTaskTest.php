@@ -10,7 +10,7 @@ use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
 use Webmozart\PathUtil\Path;
 
-class PhpmdTaskTest extends Unit
+class PhpmdLintFilesTaskTest extends Unit
 {
     /**
      * @var \Sweetchuck\Robo\PhpMessDetector\Test\UnitTester
