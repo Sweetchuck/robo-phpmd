@@ -23,7 +23,7 @@ class PhpmdLintFilesTaskCest
         $stdError = $tester->getRoboTaskStdError($id);
 
         $expectedStdError = implode(' ', [
-            " [PHP Mess Detector]",
+            " [PHP Mess Detector - Lint files]",
             "cd './tests/_data/fixtures'",
             "&&",
             "../../../bin/phpmd",
