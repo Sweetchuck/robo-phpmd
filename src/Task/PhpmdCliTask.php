@@ -2,28 +2,28 @@
 
 namespace Sweetchuck\Robo\PhpMessDetector\Task;
 
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 use Robo\Common\OutputAwareTrait;
 use Robo\Contract\CommandInterface;
 use Robo\Contract\OutputAwareInterface;
 use Stringy\StaticStringy;
 use Sweetchuck\Robo\PhpMessDetector\Utils;
+use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Process\Process;
 
 abstract class PhpmdCliTask extends PhpmdBaseTask implements
     CommandInterface,
+    ContainerAwareInterface,
     OutputAwareInterface
 {
+    use ContainerAwareTrait;
     use OutputAwareTrait;
 
     /**
      * @var string
      */
     protected $command = '';
-
-    /**
-     * @var string
-     */
-    protected $processClass = Process::class;
 
     /**
      * @var string
@@ -202,11 +202,16 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
      */
     protected function runDoIt()
     {
-        /** @var \Symfony\Component\Process\Process $process */
-        $process = new $this->processClass($this->command);
-        $this->processExitCode = $process->run(function ($type, $data) {
-            $this->processRunCallback($type, $data);
-        });
+        $process = $this
+            ->getProcessHelper()
+            ->run(
+                $this->output(),
+                $this->command,
+                null,
+                $this->getProcessRunCallbackWrapper()
+            );
+
+        $this->processExitCode = $process->getExitCode();
         $this->processStdOutput = $process->getOutput();
         $this->processStdError = $process->getErrorOutput();
 
@@ -237,6 +242,15 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this->processStdError;
     }
 
+    /**
+     * @return \Closure
+     */
+    protected function getProcessRunCallbackWrapper() {
+        return function (string $type, string $data): void {
+            $this->processRunCallback($type, $data);
+        };
+    }
+
     protected function processRunCallback(string $type, string $data): void
     {
         switch ($type) {
@@ -264,5 +278,15 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         }
 
         return 'phpmd';
+    }
+
+    protected function getProcessHelper(): ProcessHelper
+    {
+        // @todo Check that everything is available.
+        return  $this
+            ->getContainer()
+            ->get('application')
+            ->getHelperSet()
+            ->get('process');
     }
 }

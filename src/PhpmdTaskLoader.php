@@ -2,6 +2,7 @@
 
 namespace Sweetchuck\Robo\PhpMessDetector;
 
+use League\Container\ContainerAwareInterface;
 use Robo\Collection\CollectionBuilder;
 
 trait PhpmdTaskLoader
@@ -13,6 +14,12 @@ trait PhpmdTaskLoader
     {
         /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdVersionTask $task */
         $task = $this->task(Task\PhpmdVersionTask::class);
+        if ($this instanceof ContainerAwareInterface) {
+            $container = $this->getContainer();
+            if ($container) {
+                $task->setContainer($this->getContainer());
+            }
+        }
 
         return $task->setOptions($options);
     }
@@ -24,6 +31,12 @@ trait PhpmdTaskLoader
     {
         /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask $task */
         $task = $this->task(Task\PhpmdLintFilesTask::class);
+        if ($this instanceof ContainerAwareInterface) {
+            $container = $this->getContainer();
+            if ($container) {
+                $task->setContainer($this->getContainer());
+            }
+        }
 
         return $task->setOptions($options);
     }

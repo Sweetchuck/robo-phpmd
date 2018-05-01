@@ -3,11 +3,12 @@
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
 use Codeception\Test\Unit;
-use Codeception\Util\Stub;
 use org\bovigo\vfs\vfsStream;
 use Robo\Robo;
-use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcess;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
+use Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyOutput;
+use Symfony\Component\Console\Helper\ProcessHelper;
+use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
 class PhpmdLintFilesTaskTest extends Unit
@@ -154,9 +155,7 @@ class PhpmdLintFilesTaskTest extends Unit
 
         return [
             'basic' => [
-                [
-                    'exitCode' => 0,
-                ],
+                [],
                 [
                     'workingDirectory' => $vfs->url(),
                     'reportFile' => __FUNCTION__ . '/basic/foo/phpmd.txt',
@@ -170,25 +169,46 @@ class PhpmdLintFilesTaskTest extends Unit
      */
     public function testRunSuccess(array $expected, array $options)
     {
-        $container = Robo::createDefaultContainer();
-        Robo::setContainer($container);
-
-        /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask $task */
-        $task = Stub::construct(
-            PhpmdLintFilesTask::class,
-            [],
-            [
-                'processClass' => DummyProcess::class,
-            ]
-        );
-        $task->setOptions($options);
-
-        $processIndex = count(DummyProcess::$instances);
-        DummyProcess::$prophecy[$processIndex] = [
+        $expected += [
             'exitCode' => 0,
             'stdOutput' => '',
             'stdError' => '',
         ];
+
+        $container = Robo::createDefaultContainer();
+        Robo::setContainer($container);
+
+        $process = $this->make(
+            Process::class,
+            [
+                'run' => $expected['exitCode'],
+                'getExitCode' => $expected['exitCode'],
+                'getOutput' => $expected['stdOutput'],
+                'getErrorOutput' => $expected['stdError'],
+            ]
+        );
+
+        $processHelper = $this->make(
+            ProcessHelper::class,
+            [
+                'run' => $process,
+            ]
+        );
+
+        /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask $task */
+        $task = $this->construct(
+        PhpmdLintFilesTask::class,
+            [],
+            [
+                'getProcessHelper' => $processHelper,
+            ]
+        );
+
+        $dummyOutputConfig = [];
+        $dummyOutput = new DummyOutput($dummyOutputConfig);
+
+        $task->setOutput($dummyOutput);
+        $task->setOptions($options);
 
         $result = $task->run();
 
