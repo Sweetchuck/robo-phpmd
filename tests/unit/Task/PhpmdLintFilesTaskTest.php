@@ -197,7 +197,7 @@ class PhpmdLintFilesTaskTest extends Unit
 
         /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask $task */
         $task = $this->construct(
-        PhpmdLintFilesTask::class,
+            PhpmdLintFilesTask::class,
             [],
             [
                 'getProcessHelper' => $processHelper,

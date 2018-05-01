@@ -33,9 +33,11 @@ class DummyOutput extends ConsoleOutput
         if (empty($config['stdErr'])) {
             $config['stdErr'] = true;
             $this->setErrorOutput(new static($config));
-        } else {
-            $this->setErrorOutput($this);
+
+            return;
         }
+
+        $this->setErrorOutput($this);
     }
 
     /**

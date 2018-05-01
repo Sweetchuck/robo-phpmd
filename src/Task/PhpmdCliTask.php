@@ -245,7 +245,8 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
     /**
      * @return \Closure
      */
-    protected function getProcessRunCallbackWrapper() {
+    protected function getProcessRunCallbackWrapper()
+    {
         return function (string $type, string $data): void {
             $this->processRunCallback($type, $data);
         };
