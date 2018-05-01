@@ -72,9 +72,9 @@ _custom:
         working_directory: '~/repo'
         steps:
             - 'checkout'
-            -
-                run:
-                    <<: *step__run__upgrade_git
+#            -
+#                run:
+#                    <<: *step__run__upgrade_git
             -
                 run:
                     <<: *step__run__install_php_extensions
