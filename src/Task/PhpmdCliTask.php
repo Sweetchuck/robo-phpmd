@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Task;
 
 use League\Container\ContainerAwareInterface;
@@ -150,7 +152,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
                 case 'option:value':
                     if ($option['value']) {
                         $cmdPattern[] = $option['type'] === 'option:value' ? "--$optionNameCli %s" : '%s';
-                        $cmdArgs[] = escapeshellarg($option['value']);
+                        $cmdArgs[] = escapeshellarg((string) $option['value']);
                     }
                     break;
 

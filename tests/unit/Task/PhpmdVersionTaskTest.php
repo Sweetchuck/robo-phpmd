@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
 use Codeception\Test\Unit;
 use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdVersionTask;
-use Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyOutput;
+use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput as DummyOutput;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Process\Process;
 

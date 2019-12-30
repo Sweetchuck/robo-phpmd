@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
-use Codeception\Test\Unit;
 use org\bovigo\vfs\vfsStream;
 use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
-use Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyOutput;
+use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput as DummyOutput;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
-class PhpmdLintFilesTaskTest extends Unit
+class PhpmdLintFilesTaskTest extends TaskTestBase
 {
     /**
      * @var \Sweetchuck\Robo\PhpMessDetector\Test\UnitTester
@@ -85,14 +86,13 @@ class PhpmdLintFilesTaskTest extends Unit
      */
     public function testGetCommand(string $expected, array $options)
     {
-        $task = new PhpmdLintFilesTask();
-        $task->setOptions($options);
+        $task = $this->taskBuilder->taskPhpmdLintFiles($options);
         $this->tester->assertEquals($expected, $task->getCommand());
     }
 
     public function testSuffixAddRemove()
     {
-        $task = new PhpmdLintFilesTask();
+        $task = $this->taskBuilder->taskPhpmdLintFiles();
         $task
             ->setSuffixes(['a', 'b', 'c'])
             ->removeSuffix('b')
@@ -107,7 +107,7 @@ class PhpmdLintFilesTaskTest extends Unit
 
     public function testExcludePaths()
     {
-        $task = new PhpmdLintFilesTask();
+        $task = $this->taskBuilder->taskPhpmdLintFiles();
         $task
             ->setPhpmdExecutable('phpmd')
             ->setExcludePaths(['a', 'b', 'c'])

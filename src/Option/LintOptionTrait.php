@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Option;
 
 use Sweetchuck\Robo\PhpMessDetector\Utils;
@@ -120,11 +122,11 @@ trait LintOptionTrait
 
     // region coverage
     /**
-     * @var string
+     * @var bool
      */
-    protected $coverage = '';
+    protected $coverage = false;
 
-    public function getCoverage(): string
+    public function getCoverage(): bool
     {
         return $this->coverage;
     }
@@ -132,7 +134,7 @@ trait LintOptionTrait
     /**
      * @return $this
      */
-    public function setCoverage(string $value)
+    public function setCoverage(bool $value)
     {
         $this->coverage = $value;
 

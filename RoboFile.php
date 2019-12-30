@@ -390,8 +390,9 @@ class RoboFile extends Tasks
                         '{command}' => $command,
                     ]
                 ));
-                $process = new Process($command, null, null, null, null);
-                $exitCode = $process->run(function ($type, $data) {
+                $process = Process::fromShellCommandline($command, null, null, null, null);
+
+                return $process->run(function ($type, $data) {
                     switch ($type) {
                         case Process::OUT:
                             $this->output()->write($data);
@@ -402,8 +403,6 @@ class RoboFile extends Tasks
                             break;
                     }
                 });
-
-                return $exitCode;
             });
     }
 
@@ -454,24 +453,9 @@ class RoboFile extends Tasks
             ->setOutput($this->output());
     }
 
-    protected function isPhpExtensionAvailable(string $extension): bool
-    {
-        $command = sprintf('%s -m', escapeshellcmd($this->getPhpExecutable()));
-
-        $process = new Process($command);
-        $exitCode = $process->run();
-        if ($exitCode !== 0) {
-            throw new \RuntimeException('@todo');
-        }
-
-        return in_array($extension, explode("\n", $process->getOutput()));
-    }
-
     protected function isPhpDbgAvailable(): bool
     {
-        $command = sprintf('%s -qrr', escapeshellcmd($this->getPhpdbgExecutable()));
-
-        return (new Process($command))->run() === 0;
+        return (new Process([$this->getPhpdbgExecutable(), '-qrr']))->run() === 0;
     }
 
     protected function getLogDir(): string
@@ -510,7 +494,7 @@ class RoboFile extends Tasks
     {
         $invalidSuiteNames = array_diff($suiteNames, $this->getCodeceptionSuiteNames());
         if ($invalidSuiteNames) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'The following Codeception suite names are invalid: ' . implode(', ', $invalidSuiteNames),
                 1
             );

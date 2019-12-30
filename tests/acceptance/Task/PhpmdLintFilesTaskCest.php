@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Acceptance\Task;
 
 use Sweetchuck\Robo\PhpMessDetector\Test\AcceptanceTester;
