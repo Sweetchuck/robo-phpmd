@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Acceptance\Task;
 
 use Sweetchuck\Robo\PhpMessDetector\Test\AcceptanceTester;
@@ -20,7 +22,7 @@ class PhpmdVersionTaskCest
         $exitCode = $tester->getRoboTaskExitCode($id);
         $tester->assertEquals($expectedExitCode, $exitCode);
 
-        $expectedStdOutput = "The version of the Php Mess Detector is: '2.6.0'\n";
+        $expectedStdOutput = "The version of the Php Mess Detector is: '2.8.1'\n";
         $stdOutput = $tester->getRoboTaskStdOutput($id);
         $tester->assertEquals($expectedStdOutput, $stdOutput);
 

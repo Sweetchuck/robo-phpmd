@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles;
 
 use Robo\State\Data;
@@ -31,7 +33,7 @@ class PhpmdRoboFile extends Tasks
             'workingDirectory' => '',
             'phpExecutable' => '',
             'phpmdExecutable' => '../../../bin/phpmd',
-            'minimumPriority' => '0',
+            'minimumPriority' => 0,
             'reportFile' => '',
             'suffixes' => '',
             'excludePaths' => '',
