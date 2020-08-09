@@ -208,7 +208,11 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
             ->getProcessHelper()
             ->run(
                 $this->output(),
-                $this->command,
+                [
+                    'bash',
+                    '-c',
+                    $this->command,
+                ],
                 null,
                 $this->getProcessRunCallbackWrapper()
             );

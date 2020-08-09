@@ -379,7 +379,11 @@ class RoboFile extends Tasks
             $cmdPattern .= ' || [[ "${?}" == "1" ]]';
         }
 
-        $command = vsprintf($cmdPattern, $cmdArgs);
+        $command = [
+            'bash',
+            '-c',
+            vsprintf($cmdPattern, $cmdArgs),
+        ];
 
         return $cb
             ->addCode(function () use ($command) {
@@ -387,10 +391,10 @@ class RoboFile extends Tasks
                     '<question>[{name}]</question> runs <info>{command}</info>',
                     [
                         '{name}' => 'Codeception',
-                        '{command}' => $command,
+                        '{command}' => implode(' ', $command),
                     ]
                 ));
-                $process = Process::fromShellCommandline($command, null, null, null, null);
+                $process = new Process($command, null, null, null, null);
 
                 return $process->run(function ($type, $data) {
                     switch ($type) {
@@ -477,10 +481,15 @@ class RoboFile extends Tasks
                 ->in($this->codeceptionInfo['paths']['tests'])
                 ->files()
                 ->name('*.suite.yml')
+                ->name('*.suite.dist.yml')
                 ->depth(0);
 
             foreach ($suiteFiles as $suiteFile) {
-                $this->codeceptionSuiteNames[] = $suiteFile->getBasename('.suite.yml');
+                $this->codeceptionSuiteNames[] = preg_replace(
+                    '/\.suite(\.dist)?\.yml$/',
+                    '',
+                    $suiteFile->getBasename()
+                );
             }
         }
 
