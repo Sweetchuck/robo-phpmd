@@ -21,7 +21,6 @@ class DummyTaskBuilder implements BuilderAwareInterface, ContainerAwareInterface
     use TaskIO;
     use PhpmdTaskLoader {
         taskPhpmdLintFiles as public;
-        taskPhpmdLintInput as public;
         taskPhpmdVersion as public;
     }
 

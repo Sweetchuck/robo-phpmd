@@ -42,15 +42,4 @@ trait PhpmdTaskLoader
 
         return $task->setOptions($options);
     }
-
-    /**
-     * @return \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintInputTask|\Robo\Collection\CollectionBuilder
-     */
-    protected function taskPhpmdLintInput(array $options = []): CollectionBuilder
-    {
-        /** @var \Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintInputTask $task */
-        $task = $this->task(Task\PhpmdLintInputTask::class);
-
-        return $task->setOptions($options);
-    }
 }

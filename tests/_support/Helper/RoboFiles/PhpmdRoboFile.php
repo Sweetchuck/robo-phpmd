@@ -13,6 +13,14 @@ class PhpmdRoboFile extends Tasks
 {
     use PhpmdTaskLoader;
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function output()
+    {
+        return $this->getContainer()->get('output');
+    }
+
     public function phpmdVersion(): TaskInterface
     {
         return $this
