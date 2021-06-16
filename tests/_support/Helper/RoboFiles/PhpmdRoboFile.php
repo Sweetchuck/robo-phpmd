@@ -53,11 +53,13 @@ class PhpmdRoboFile extends Tasks
         $options['suffixes'] = $options['suffixes'] ? explode(',', $options['suffixes']) : [];
         $options['excludePaths'] = $options['excludePaths'] ? explode(',', $options['excludePaths']) : [];
 
-        return $this
+        $task = $this
             ->taskPhpmdLintFiles($options)
             ->setPaths(explode(',', $paths))
             ->setReportFormat($reportFormat)
-            ->setRuleSetFileNames(explode(',', $ruleSetNames))
-            ->setOutput($this->output());
+            ->setRuleSetFileNames(explode(',', $ruleSetNames));
+        $task->setOutput($this->output());
+
+        return $task;
     }
 }

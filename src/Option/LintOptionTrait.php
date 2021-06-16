@@ -11,10 +11,7 @@ trait LintOptionTrait
     // region Options
 
     // region paths
-    /**
-     * @var array
-     */
-    protected $paths = [];
+    protected array $paths = [];
 
     public function getPaths(): array
     {
@@ -33,10 +30,7 @@ trait LintOptionTrait
     // endregion
 
     // region reportFormat
-    /**
-     * @var string
-     */
-    protected $reportFormat = 'text';
+    protected string $reportFormat = 'text';
 
     public function getReportFormat(): string
     {
@@ -55,10 +49,7 @@ trait LintOptionTrait
     // endregion
 
     // region ruleSetFileNames
-    /**
-     * @var array
-     */
-    protected $ruleSetFileNames = [];
+    protected array $ruleSetFileNames = [];
 
     public function getRuleSetFileNames(): array
     {
@@ -77,10 +68,7 @@ trait LintOptionTrait
     // endregion
 
     // region minimumPriority
-    /**
-     * @var int
-     */
-    protected $minimumPriority = 0;
+    protected int $minimumPriority = 0;
 
     public function getMinimumPriority(): int
     {
@@ -99,10 +87,7 @@ trait LintOptionTrait
     // endregion
 
     // region inputFile
-    /**
-     * @var string
-     */
-    protected $inputFile = '';
+    protected string $inputFile = '';
 
     public function getInputFile(): string
     {
@@ -121,10 +106,7 @@ trait LintOptionTrait
     // endregion
 
     // region coverage
-    /**
-     * @var bool
-     */
-    protected $coverage = false;
+    protected bool $coverage = false;
 
     public function getCoverage(): bool
     {
@@ -143,10 +125,7 @@ trait LintOptionTrait
     // endregion
 
     // region reportFile
-    /**
-     * @var string
-     */
-    protected $reportFile = '';
+    protected string $reportFile = '';
 
     public function getReportFile(): string
     {
@@ -165,10 +144,7 @@ trait LintOptionTrait
     // endregion
 
     // region reportFileHtml
-    /**
-     * @var string
-     */
-    protected $reportFileHtml = '';
+    protected string $reportFileHtml = '';
 
     public function getReportFileHtml(): string
     {
@@ -187,10 +163,7 @@ trait LintOptionTrait
     // endregion
 
     // region reportFileText
-    /**
-     * @var string
-     */
-    protected $reportFileText = '';
+    protected string $reportFileText = '';
 
     public function getReportFileText(): string
     {
@@ -209,10 +182,7 @@ trait LintOptionTrait
     // endregion
 
     // region reportFileXml
-    /**
-     * @var string
-     */
-    protected $reportFileXml = '';
+    protected string $reportFileXml = '';
 
     public function getReportFileXml(): string
     {
@@ -231,10 +201,7 @@ trait LintOptionTrait
     // endregion
 
     // region suffixes
-    /**
-     * @var array
-     */
-    protected $suffixes = [];
+    protected array $suffixes = [];
 
     public function getSuffixes(): array
     {
@@ -251,6 +218,9 @@ trait LintOptionTrait
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addSuffix(string $suffix)
     {
         $this->suffixes[$suffix] = true;
@@ -258,6 +228,9 @@ trait LintOptionTrait
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function removeSuffix(string $suffix)
     {
         unset($this->suffixes[$suffix]);
@@ -267,10 +240,7 @@ trait LintOptionTrait
     // endregion
 
     // region excludePaths
-    /**
-     * @var array
-     */
-    protected $excludePaths = [];
+    protected array $excludePaths = [];
 
     public function getExcludePaths(): array
     {
@@ -320,10 +290,7 @@ trait LintOptionTrait
     // endregion
 
     // region strict
-    /**
-     * @var bool
-     */
-    protected $strict = false;
+    protected bool $strict = false;
 
     public function getStrict(): bool
     {
@@ -342,10 +309,7 @@ trait LintOptionTrait
     // endregion
 
     // region ignoreViolationsOnExit
-    /**
-     * @var bool
-     */
-    protected $ignoreViolationsOnExit = false;
+    protected bool $ignoreViolationsOnExit = false;
 
     public function getIgnoreViolationsOnExit(): bool
     {
@@ -433,9 +397,6 @@ trait LintOptionTrait
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getCommandOptionsLint(): array
     {
         return [

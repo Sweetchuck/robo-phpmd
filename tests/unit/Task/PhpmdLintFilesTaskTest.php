@@ -14,11 +14,6 @@ use Webmozart\PathUtil\Path;
 
 class PhpmdLintFilesTaskTest extends TaskTestBase
 {
-    /**
-     * @var \Sweetchuck\Robo\PhpMessDetector\Test\UnitTester
-     */
-    protected $tester;
-
     public function casesGetCommand(): array
     {
         return [

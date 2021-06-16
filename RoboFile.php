@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types = 1);
+
 use Consolidation\AnnotatedCommand\CommandData;
-use League\Container\ContainerInterface;
+use League\Container\Container as LeagueContainer;
 use Robo\Tasks;
 use Robo\Collection\CollectionBuilder;
 use Sweetchuck\LintReport\Reporter\BaseReporter;
@@ -21,59 +23,34 @@ class RoboFile extends Tasks
     use PhpcsTaskLoader;
     use PhpmdTaskLoader;
 
-    /**
-     * @var array
-     */
-    protected $composerInfo = [];
+    protected array $composerInfo = [];
 
-    /**
-     * @var array
-     */
-    protected $codeceptionInfo = [];
+    protected array $codeceptionInfo = [];
 
     /**
      * @var string[]
      */
-    protected $codeceptionSuiteNames = [];
+    protected array $codeceptionSuiteNames = [];
 
-    /**
-     * @var string
-     */
-    protected $packageVendor = '';
+    protected string $packageVendor = '';
 
-    /**
-     * @var string
-     */
-    protected $packageName = '';
+    protected string $packageName = '';
 
-    /**
-     * @var string
-     */
-    protected $binDir = 'vendor/bin';
+    protected string $binDir = 'vendor/bin';
 
-    /**
-     * @var string
-     */
-    protected $gitHook = '';
+    protected string $gitHook = '';
 
-    /**
-     * @var string
-     */
-    protected $envVarNamePrefix = '';
+    protected string $envVarNamePrefix = '';
 
     /**
      * Allowed values: dev, ci, prod.
-     *
-     * @var string
      */
-    protected $environmentType = '';
+    protected string $environmentType = '';
 
     /**
      * Allowed values: local, jenkins, travis, circleci.
-     *
-     * @var string
      */
-    protected $environmentName = '';
+    protected string $environmentName = '';
 
     /**
      * RoboFile constructor.
@@ -88,19 +65,27 @@ class RoboFile extends Tasks
     }
 
     /**
-     * {@inheritdoc}
+     * @hook pre-command @initLintReporters
      */
-    public function setContainer(ContainerInterface $container)
+    public function initLintReporters()
     {
-        if (!$container->has('lintCheckstyleReporter')) {
-            BaseReporter::lintReportConfigureContainer($container);
-        }
+        $lintServices = BaseReporter::getServices();
+        $container = $this->getContainer();
+        foreach ($lintServices as $name => $class) {
+            if ($container->has($name)) {
+                continue;
+            }
 
-        return parent::setContainer($container);
+            if ($container instanceof LeagueContainer) {
+                $container->share($name, $class);
+            }
+        }
     }
 
     /**
      * Git "pre-commit" hook callback.
+     *
+     * @initLintReporters
      */
     public function githookPreCommit(): CollectionBuilder
     {
@@ -111,6 +96,36 @@ class RoboFile extends Tasks
             ->addTask($this->taskComposerValidate())
             ->addTask($this->getTaskPhpcsLint())
             ->addTask($this->getTaskCodeceptRunSuites());
+    }
+
+    /**
+     * Run code style checkers.
+     *
+     * @initLintReporters
+     */
+    public function lint(): CollectionBuilder
+    {
+        return $this
+            ->collectionBuilder()
+            ->addTask($this->taskComposerValidate())
+            ->addTask($this->getTaskPhpcsLint())
+            ->addTask($this->getTaskPhpmdLint());
+    }
+
+    /**
+     * @initLintReporters
+     */
+    public function lintPhpcs(): CollectionBuilder
+    {
+        return $this->getTaskPhpcsLint();
+    }
+
+    /**
+     * @initLintReporters
+     */
+    public function lintPhpmd(): CollectionBuilder
+    {
+        return $this->getTaskPhpmdLint();
     }
 
     /**
@@ -132,28 +147,6 @@ class RoboFile extends Tasks
         ]
     ): CollectionBuilder {
         return $this->getTaskCodeceptRunSuites($suiteNames, $options);
-    }
-
-    /**
-     * Run code style checkers.
-     */
-    public function lint(): CollectionBuilder
-    {
-        return $this
-            ->collectionBuilder()
-            ->addTask($this->taskComposerValidate())
-            ->addTask($this->getTaskPhpcsLint())
-            ->addTask($this->getTaskPhpmdLint());
-    }
-
-    public function lintPhpcs(): CollectionBuilder
-    {
-        return $this->getTaskPhpcsLint();
-    }
-
-    public function lintPhpmd(): CollectionBuilder
-    {
-        return $this->getTaskPhpmdLint();
     }
 
     protected function errorOutput(): ?OutputInterface
@@ -178,8 +171,8 @@ class RoboFile extends Tasks
      */
     protected function initEnvironmentTypeAndName()
     {
-        $this->environmentType = getenv($this->getEnvVarName('environment_type'));
-        $this->environmentName = getenv($this->getEnvVarName('environment_name'));
+        $this->environmentType = getenv($this->getEnvVarName('environment_type')) ?: '';
+        $this->environmentName = getenv($this->getEnvVarName('environment_name')) ?: '';
 
         if (!$this->environmentType) {
             if (getenv('CI') === 'true') {
@@ -428,20 +421,25 @@ class RoboFile extends Tasks
         }
 
         if ($this->gitHook === 'pre-commit') {
+            $phpcsTask = $this->taskPhpcsLintInput($options);
+            $phpcsTask->setOutput($this->output());
+            $phpcsTask
+                ->deferTaskConfiguration('setFiles', 'files')
+                ->deferTaskConfiguration('setIgnore', 'phpcsXml.exclude-patterns');
+
             return $this
                 ->collectionBuilder()
                 ->addTask($this
                     ->taskPhpcsParseXml()
                     ->setAssetNamePrefix('phpcsXml.'))
                 ->addTask($this
+                    ->taskGitListStagedFiles()
+                    ->setPaths(['*.php']))
+                ->addTask($this
                     ->taskGitReadStagedFiles()
                     ->setCommandOnly(true)
-                    ->setWorkingDirectory('.')
-                    ->deferTaskConfiguration('setPaths', 'phpcsXml.files'))
-                ->addTask($this
-                    ->taskPhpcsLintInput($options)
-                    ->deferTaskConfiguration('setFiles', 'files')
-                    ->deferTaskConfiguration('setIgnore', 'phpcsXml.exclude-patterns'));
+                    ->deferTaskConfiguration('setPaths', 'fileNames'))
+                ->addTask($phpcsTask);
         }
 
         return $this->taskPhpcsLintFiles($options);
@@ -449,12 +447,14 @@ class RoboFile extends Tasks
 
     protected function getTaskPhpmdLint()
     {
-        return $this
+        $task = $this
             ->taskPhpmdLintFiles()
             ->setInputFile('./rulesets/custom.include-pattern.txt')
             ->addExcludePathsFromFile('./rulesets/custom.exclude-pattern.txt')
-            ->setRuleSetFileNames(['custom'])
-            ->setOutput($this->output());
+            ->setRuleSetFileNames(['custom']);
+        $task->setOutput($this->output());
+
+        return $task;
     }
 
     protected function isPhpDbgAvailable(): bool
@@ -476,7 +476,6 @@ class RoboFile extends Tasks
         if (!$this->codeceptionSuiteNames) {
             $this->initCodeceptionInfo();
 
-            /** @var \Symfony\Component\Finder\Finder $suiteFiles */
             $suiteFiles = Finder::create()
                 ->in($this->codeceptionInfo['paths']['tests'])
                 ->files()

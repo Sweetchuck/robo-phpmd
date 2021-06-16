@@ -4,11 +4,11 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\PhpMessDetector\Task;
 
+use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Common\OutputAwareTrait;
 use Robo\Contract\CommandInterface;
-use Robo\Contract\OutputAwareInterface;
 use Stringy\StaticStringy;
 use Sweetchuck\Robo\PhpMessDetector\Utils;
 use Symfony\Component\Console\Helper\ProcessHelper;
@@ -22,33 +22,18 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
     use ContainerAwareTrait;
     use OutputAwareTrait;
 
-    /**
-     * @var string
-     */
-    protected $command = '';
+    protected string $command = '';
 
-    /**
-     * @var string
-     */
-    protected $processStdOutput = '';
+    protected string $processStdOutput = '';
 
-    /**
-     * @var string
-     */
-    protected $processStdError = '';
+    protected string $processStdError = '';
 
-    /**
-     * @var int
-     */
-    protected $processExitCode = 0;
+    protected int $processExitCode = 0;
 
     // region Options
 
     // region phpExecutable
-    /**
-     * @var string
-     */
-    protected $phpExecutable = '';
+    protected string $phpExecutable = '';
 
     public function getPhpExecutable(): string
     {
@@ -67,10 +52,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
     // endregion
 
     // region phpmdExecutable.
-    /**
-     * @var string
-     */
-    protected $phpmdExecutable = '';
+    protected string $phpmdExecutable = '';
 
     public function getPhpmdExecutable(): string
     {
@@ -217,7 +199,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
                 $this->getProcessRunCallbackWrapper()
             );
 
-        $this->processExitCode = $process->getExitCode();
+        $this->processExitCode = (int) $process->getExitCode();
         $this->processStdOutput = $process->getOutput();
         $this->processStdError = $process->getErrorOutput();
 
@@ -232,26 +214,17 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getTaskResultCode(): int
     {
         return $this->processExitCode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getTaskResultMessage(): string
     {
         return $this->processStdError;
     }
 
-    /**
-     * @return \Closure
-     */
-    protected function getProcessRunCallbackWrapper()
+    protected function getProcessRunCallbackWrapper(): callable
     {
         return function (string $type, string $data): void {
             $this->processRunCallback($type, $data);

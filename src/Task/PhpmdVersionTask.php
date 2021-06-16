@@ -9,7 +9,7 @@ class PhpmdVersionTask extends PhpmdCliTask
     /**
      * {@inheritdoc}
      */
-    protected $taskName = 'PHP Mess Detector - Version';
+    protected string $taskName = 'PHP Mess Detector - Version';
 
     /**
      * {@inheritdoc}

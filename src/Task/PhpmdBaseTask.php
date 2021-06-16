@@ -16,24 +16,16 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
     use InflectionTrait;
 
     /**
-     * @var string
-     *
      * @abstract
      */
-    protected $taskName = 'Php Mess Detector';
+    protected string $taskName = 'Php Mess Detector';
 
-    /**
-     * @var array
-     */
-    protected $assets = [];
+    protected array $assets = [];
 
     // region Options
 
     // region Option - workingDirectory.
-    /**
-     * @var string
-     */
-    protected $workingDirectory = '';
+    protected string $workingDirectory = '';
 
     public function getWorkingDirectory(): string
     {
@@ -52,10 +44,7 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
     // endregion
 
     // region Option - assetNamePrefix.
-    /**
-     * @var string
-     */
-    protected $assetNamePrefix = '';
+    protected string $assetNamePrefix = '';
 
     public function getAssetNamePrefix(): string
     {

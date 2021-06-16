@@ -6,46 +6,32 @@ namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
 use Codeception\Test\Unit;
 use League\Container\Container as LeagueContainer;
+use Psr\Container\ContainerInterface;
 use Robo\Collection\CollectionBuilder;
-use Robo\Config\Config;
+use Robo\Config\Config as RoboConfig;
 use Robo\Robo;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcessHelper;
 use Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyTaskBuilder;
+use Sweetchuck\Robo\PhpMessDetector\Test\UnitTester;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\ErrorHandler\BufferingLogger;
 
 class TaskTestBase extends Unit
 {
-    /**
-     * @var \Sweetchuck\Robo\Git\Test\UnitTester
-     */
-    protected $tester;
+    protected UnitTester $tester;
 
-    /**
-     * @var \League\Container\ContainerInterface
-     */
-    protected $container;
+    protected ContainerInterface $container;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected RoboConfig $config;
 
-    /**
-     * @var \Robo\Collection\CollectionBuilder
-     */
-    protected $builder;
+    protected CollectionBuilder $builder;
 
-    /**
-     * @var \Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyTaskBuilder
-     */
-    protected $taskBuilder;
+    protected DummyTaskBuilder $taskBuilder;
 
     /**
      * @SuppressWarnings("CamelCaseMethodName")
      */
-    //phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     public function _before()
     {
         parent::_before();
@@ -53,9 +39,9 @@ class TaskTestBase extends Unit
         Robo::unsetContainer();
 
         $this->container = new LeagueContainer();
-        $application = new SymfonyApplication('Sweetchuck - Robo Git', '1.0.0');
+        $application = new SymfonyApplication('Sweetchuck - Robo PHPMD', '1.0.0');
         $application->getHelperSet()->set(new DummyProcessHelper(), 'process');
-        $this->config = (new Config());
+        $this->config = (new RoboConfig());
         $input = null;
         $output = new DummyOutput([
             'verbosity' => DummyOutput::VERBOSITY_DEBUG,
@@ -71,5 +57,4 @@ class TaskTestBase extends Unit
         $this->taskBuilder->setContainer($this->container);
         $this->taskBuilder->setBuilder($this->builder);
     }
-    // phpcs:enable PSR2.Methods.MethodDeclaration.Underscore
 }

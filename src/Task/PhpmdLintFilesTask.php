@@ -15,12 +15,9 @@ class PhpmdLintFilesTask extends PhpmdCliTask
     /**
      * {@inheritdoc}
      */
-    protected $taskName = 'PHP Mess Detector - Lint files';
+    protected string $taskName = 'PHP Mess Detector - Lint files';
 
-    /**
-     * @var \Symfony\Component\Filesystem\Filesystem
-     */
-    protected $fileSystem;
+    protected Filesystem $fileSystem;
 
     public function __construct()
     {
@@ -28,7 +25,7 @@ class PhpmdLintFilesTask extends PhpmdCliTask
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
      */
     public function setOptions(array $options)
     {
@@ -39,7 +36,7 @@ class PhpmdLintFilesTask extends PhpmdCliTask
     }
 
     /**
-     * @return $this
+     * {@inheritdoc}
      */
     protected function runDoIt()
     {

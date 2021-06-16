@@ -36,6 +36,6 @@ class PhpmdLintFilesTaskCest
 
         $tester->assertEquals(0, $exitCode);
         $tester->assertEquals('', $stdOutput);
-        $tester->assertContains($expectedStdError, $stdError);
+        $tester->assertStringContainsString($expectedStdError, $stdError);
     }
 }
