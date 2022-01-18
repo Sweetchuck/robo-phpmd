@@ -9,7 +9,6 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Common\OutputAwareTrait;
 use Robo\Contract\CommandInterface;
-use Stringy\StaticStringy;
 use Sweetchuck\Robo\PhpMessDetector\Utils;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Process\Process;
@@ -128,7 +127,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         $cmdArgs[] = escapeshellcmd($commandOptions['phpmdExecutable']['value']);
 
         foreach ($commandOptions as $optionName => $option) {
-            $optionNameCli = $option['name'] ?? StaticStringy::toLowerCase($optionName);
+            $optionNameCli = $option['name'] ?? mb_strtolower($optionName);
             switch ($option['type']) {
                 case 'arg:value':
                 case 'option:value':
