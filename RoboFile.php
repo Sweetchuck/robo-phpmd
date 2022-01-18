@@ -214,6 +214,8 @@ class RoboFile extends Tasks
 
     protected function getPhpExecutable(): string
     {
+        var_dump(getenv($this->getEnvVarName('php_executable')) ?: PHP_BINARY);
+
         return getenv($this->getEnvVarName('php_executable')) ?: PHP_BINARY;
     }
 
@@ -291,13 +293,8 @@ class RoboFile extends Tasks
         $logDir = $this->getLogDir();
 
         $cmdArgs = [];
-        if ($this->isPhpDbgAvailable()) {
-            $cmdPattern = '%s -qrr';
-            $cmdArgs[] = escapeshellcmd($this->getPhpdbgExecutable());
-        } else {
-            $cmdPattern = '%s';
-            $cmdArgs[] = escapeshellcmd($this->getPhpExecutable());
-        }
+        $cmdPattern = '%s';
+        $cmdArgs[] = escapeshellcmd($this->getPhpExecutable());
 
         $cmdPattern .= ' %s';
         $cmdArgs[] = escapeshellcmd("{$this->binDir}/codecept");
