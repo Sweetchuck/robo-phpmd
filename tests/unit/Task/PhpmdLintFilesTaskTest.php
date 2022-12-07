@@ -9,8 +9,8 @@ use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput as DummyOutput;
 use Symfony\Component\Console\Helper\ProcessHelper;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
 
 class PhpmdLintFilesTaskTest extends TaskTestBase
 {
