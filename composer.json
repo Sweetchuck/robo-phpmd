@@ -32,7 +32,7 @@
         "php": ">=7.4",
         "ext-mbstring": "*",
         "consolidation/robo": "^3.0",
-        "webmozart/path-util": "^2.3"
+        "symfony/filesystem": "^4.0 || ^5.0 || ^6.0"
     },
     "require-dev": {
         "ext-json": "*",
@@ -46,9 +46,9 @@
         "sweetchuck/git-hooks": "2.x-dev",
         "sweetchuck/robo-git": "2.x-dev",
         "sweetchuck/robo-phpcs": "2.x-dev",
-        "symfony/error-handler": "4.0 || ^5.0",
-        "symfony/finder": "^4.0 || ^5.0",
-        "symfony/yaml": "^4.0 || ^5.0"
+        "symfony/error-handler": "4.0 || ^5.0 || ^6.0",
+        "symfony/finder": "^4.0 || ^5.0 || ^6.0",
+        "symfony/yaml": "^4.0 || ^5.0 || ^6.0"
     },
     "suggest": {
         "phpmd/phpmd": "After all the 'phpmd' executable has to be available."

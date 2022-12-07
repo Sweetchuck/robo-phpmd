@@ -22,7 +22,7 @@ class PhpmdVersionTaskCest
         $exitCode = $tester->getRoboTaskExitCode($id);
         $tester->assertEquals($expectedExitCode, $exitCode);
 
-        $expectedStdOutput = "PHPMD 2.11.1\nThe version of the Php Mess Detector is: '2.11.1'\n";
+        $expectedStdOutput = "PHPMD 2.13.0\nThe version of the Php Mess Detector is: '2.13.0'\n";
         $stdOutput = $tester->getRoboTaskStdOutput($id);
         $tester->assertEquals($expectedStdOutput, $stdOutput);
 

@@ -6,7 +6,7 @@ namespace Sweetchuck\Robo\PhpMessDetector\Task;
 
 use Sweetchuck\Robo\PhpMessDetector\Option\LintOptionTrait;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class PhpmdLintFilesTask extends PhpmdCliTask
 {
