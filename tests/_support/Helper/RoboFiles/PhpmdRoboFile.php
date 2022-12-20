@@ -40,7 +40,7 @@ class PhpmdRoboFile extends Tasks
         array $options = [
             'workingDirectory' => '',
             'phpExecutable' => '',
-            'phpmdExecutable' => '../../../bin/phpmd',
+            'phpmdExecutable' => '../../../vendor/bin/phpmd',
             'minimumPriority' => 0,
             'reportFile' => '',
             'suffixes' => '',

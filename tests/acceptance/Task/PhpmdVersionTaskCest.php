@@ -26,7 +26,7 @@ class PhpmdVersionTaskCest
         $stdOutput = $tester->getRoboTaskStdOutput($id);
         $tester->assertEquals($expectedStdOutput, $stdOutput);
 
-        $expectedStdError = " [PHP Mess Detector - Version] bin/phpmd --version\n";
+        $expectedStdError = " [PHP Mess Detector - Version] vendor/bin/phpmd --version\n";
         $stdError = $tester->getRoboTaskStdError($id);
         $tester->assertStringContainsString($expectedStdError, $stdError);
     }
