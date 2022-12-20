@@ -23,7 +23,10 @@
         "allow-plugins": {
             "sweetchuck/git-hooks": true
         },
-        "bin-dir": "bin",
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
         "sort-packages": true
     },
     "minimum-stability": "dev",
@@ -46,6 +49,7 @@
         "sweetchuck/git-hooks": "2.x-dev",
         "sweetchuck/robo-git": "2.x-dev",
         "sweetchuck/robo-phpcs": "2.x-dev",
+        "sweetchuck/utils": "1.x-dev",
         "symfony/error-handler": "4.0 || ^5.0 || ^6.0",
         "symfony/finder": "^4.0 || ^5.0 || ^6.0",
         "symfony/yaml": "^4.0 || ^5.0 || ^6.0"

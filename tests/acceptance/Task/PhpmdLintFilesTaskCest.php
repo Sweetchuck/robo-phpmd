@@ -28,7 +28,7 @@ class PhpmdLintFilesTaskCest
             " [PHP Mess Detector - Lint files]",
             "cd './tests/_data/fixtures'",
             "&&",
-            "../../../bin/phpmd",
+            "../../../vendor/bin/phpmd",
             "'../../../tests/_data/fixtures/a.php'",
             "'text'",
             "'../../../vendor/phpmd/phpmd/src/main/resources/rulesets/codesize.xml'\n",

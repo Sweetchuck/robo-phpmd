@@ -4,12 +4,17 @@ declare(strict_types = 1);
 
 use Consolidation\AnnotatedCommand\CommandData;
 use League\Container\Container as LeagueContainer;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Robo\Common\ConfigAwareTrait;
+use Robo\Contract\ConfigAwareInterface;
 use Robo\Tasks;
 use Robo\Collection\CollectionBuilder;
 use Sweetchuck\LintReport\Reporter\BaseReporter;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Sweetchuck\Robo\Phpcs\PhpcsTaskLoader;
 use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
+use Sweetchuck\Utils\Filter\ArrayFilterEnabled;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
@@ -17,8 +22,10 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
-class RoboFile extends Tasks
+class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterface
 {
+    use LoggerAwareTrait;
+    use ConfigAwareTrait;
     use GitTaskLoader;
     use PhpcsTaskLoader;
     use PhpmdTaskLoader;
@@ -69,16 +76,19 @@ class RoboFile extends Tasks
      */
     public function initLintReporters()
     {
-        $lintServices = BaseReporter::getServices();
         $container = $this->getContainer();
-        foreach ($lintServices as $name => $class) {
+        if (!($container instanceof LeagueContainer)) {
+            return;
+        }
+
+        foreach (BaseReporter::getServices() as $name => $class) {
             if ($container->has($name)) {
                 continue;
             }
 
-            if ($container instanceof LeagueContainer) {
-                $container->addShared($name, $class);
-            }
+            $container
+                ->add($name, $class)
+                ->setShared(false);
         }
     }
 
@@ -234,7 +244,7 @@ class RoboFile extends Tasks
         }
 
         $this->composerInfo = json_decode(file_get_contents('composer.json'), true);
-        list($this->packageVendor, $this->packageName) = explode('/', $this->composerInfo['name']);
+        [$this->packageVendor, $this->packageName] = explode('/', $this->composerInfo['name']);
 
         if (!empty($this->composerInfo['config']['bin-dir'])) {
             $this->binDir = $this->composerInfo['config']['bin-dir'];
@@ -252,16 +262,20 @@ class RoboFile extends Tasks
             return $this;
         }
 
-        if (is_readable('codeception.yml')) {
-            $this->codeceptionInfo = Yaml::parse(file_get_contents('codeception.yml'));
-        } else {
-            $this->codeceptionInfo = [
-                'paths' => [
-                    'tests' => 'tests',
-                    'log' => 'tests/_output',
-                ],
-            ];
-        }
+        $default = [
+            'paths' => [
+                'tests' => 'tests',
+                'log' => 'tests/_log',
+            ],
+        ];
+        $dist = is_readable('codeception.dist.yml') ?
+            Yaml::parse(file_get_contents('codeception.dist.yml') ?: '{}')
+            : [];
+        $local = is_readable('codeception.yml') ?
+            Yaml::parse(file_get_contents('codeception.yml') ?: '{}')
+            : [];
+
+        $this->codeceptionInfo = array_replace_recursive($default, $dist, $local);
 
         return $this;
     }
@@ -272,38 +286,54 @@ class RoboFile extends Tasks
             $suiteNames = ['all'];
         }
 
+        $phpExecutables = array_filter(
+            (array) $this->getConfig()->get('php.executables'),
+            new ArrayFilterEnabled(),
+        );
+
         $cb = $this->collectionBuilder();
         foreach ($suiteNames as $suiteName) {
-            $cb->addTask($this->getTaskCodeceptRunSuite($suiteName, $options));
+            foreach ($phpExecutables as $phpExecutable) {
+                $cb->addTask($this->getTaskCodeceptRunSuite($suiteName, $phpExecutable));
+            }
         }
 
         return $cb;
     }
 
-    protected function getTaskCodeceptRunSuite(string $suite, array $options = []): CollectionBuilder
+    protected function getTaskCodeceptRunSuite(string $suite, array $php): CollectionBuilder
     {
         $this->initCodeceptionInfo();
 
-        $withCoverageHtml = in_array($this->environmentType, ['dev']);
-        $withCoverageXml = in_array($this->environmentType, ['ci']);
+        $withCoverageHtml = $this->environmentType === 'dev';
+        $withCoverageXml = $this->environmentType === 'ci';
 
-        $withUnitReportHtml = in_array($this->environmentType, ['dev']);
-        $withUnitReportXml = in_array($this->environmentType, ['ci']);
+        $withUnitReportHtml = $this->environmentType === 'dev';
+        $withUnitReportXml = $this->environmentType === 'ci';
 
         $logDir = $this->getLogDir();
 
+        $cmdPattern = '';
         $cmdArgs = [];
-        $cmdPattern = '%s';
-        $cmdArgs[] = escapeshellcmd($this->getPhpExecutable());
+        foreach ($php['envVars'] ?? [] as $envName => $envValue) {
+            $cmdPattern .= "{$envName}";
+            if ($envValue === null) {
+                $cmdPattern .= ' ';
+            } else {
+                $cmdPattern .= '=%s ';
+                $cmdArgs[] = escapeshellarg($envValue);
+            }
+        }
+
+        $cmdPattern .= '%s';
+        $cmdArgs[] = $php['command'];
 
         $cmdPattern .= ' %s';
         $cmdArgs[] = escapeshellcmd("{$this->binDir}/codecept");
 
         $cmdPattern .= ' --ansi';
         $cmdPattern .= ' --verbose';
-        if (!empty($options['debug'])) {
-            $cmdPattern .= ' --debug';
-        }
+        $cmdPattern .= ' --debug';
 
         $cb = $this->collectionBuilder();
         if ($withCoverageHtml) {
@@ -324,7 +354,7 @@ class RoboFile extends Tasks
 
         if ($withCoverageHtml || $withCoverageXml) {
             $cmdPattern .= ' --coverage=%s';
-            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.php");
+            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.serialized");
 
             $cb->addTask(
                 $this
@@ -345,16 +375,13 @@ class RoboFile extends Tasks
         }
 
         if ($withUnitReportXml) {
-            $jUnitFilePath = "machine/junit/$suite/junit.$suite.xml";
-            $dirToCreate = Path::getDirectory("$logDir/$jUnitFilePath");
-
             $cmdPattern .= ' --xml=%s';
-            $cmdArgs[] = escapeshellarg($jUnitFilePath);
+            $cmdArgs[] = escapeshellarg("machine/junit/junit.$suite.xml");
 
             $cb->addTask(
                 $this
                     ->taskFilesystemStack()
-                    ->mkdir($dirToCreate)
+                    ->mkdir("$logDir/machine/junit")
             );
         }
 
@@ -364,27 +391,37 @@ class RoboFile extends Tasks
             $cmdArgs[] = escapeshellarg($suite);
         }
 
+        $envDir = $this->codeceptionInfo['paths']['envs'];
+        $envFileName = "{$this->environmentType}.{$this->environmentName}";
+        if (file_exists("$envDir/$envFileName.yml")) {
+            $cmdPattern .= ' --env %s';
+            $cmdArgs[] = escapeshellarg($envFileName);
+        }
+
         if ($this->environmentType === 'ci' && $this->environmentName === 'jenkins') {
             // Jenkins has to use a post-build action to mark the build "unstable".
             $cmdPattern .= ' || [[ "${?}" == "1" ]]';
         }
 
-        $command = [
-            'bash',
-            '-c',
-            vsprintf($cmdPattern, $cmdArgs),
-        ];
+        $command = vsprintf($cmdPattern, $cmdArgs);
 
         return $cb
-            ->addCode(function () use ($command) {
+            ->addCode(function () use ($command, $php) {
                 $this->output()->writeln(strtr(
                     '<question>[{name}]</question> runs <info>{command}</info>',
                     [
                         '{name}' => 'Codeception',
-                        '{command}' => implode(' ', $command),
+                        '{command}' => $command,
                     ]
                 ));
-                $process = new Process($command, null, null, null, null);
+
+                $process = Process::fromShellCommandline(
+                    $command,
+                    null,
+                    $php['envVars'] ?? null,
+                    null,
+                    null,
+                );
 
                 return $process->run(function ($type, $data) {
                     switch ($type) {
@@ -414,7 +451,7 @@ class RoboFile extends Tasks
             $options['lintReporters']['lintCheckstyleReporter'] = $this
                 ->getContainer()
                 ->get('lintCheckstyleReporter')
-                ->setDestination('tests/_output/machine/checkstyle/phpcs.psr2.xml');
+                ->setDestination('tests/_log/machine/checkstyle/phpcs.psr2.xml');
         }
 
         if ($this->gitHook === 'pre-commit') {
@@ -465,7 +502,7 @@ class RoboFile extends Tasks
 
         return !empty($this->codeceptionInfo['paths']['log']) ?
             $this->codeceptionInfo['paths']['log']
-            : 'tests/_output';
+            : 'tests/_log';
     }
 
     protected function getCodeceptionSuiteNames(): array
