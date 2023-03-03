@@ -79,13 +79,13 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
     /**
      * @dataProvider casesGetCommand
      */
-    public function testGetCommand(string $expected, array $options)
+    public function testGetCommand(string $expected, array $options): void
     {
         $task = $this->taskBuilder->taskPhpmdLintFiles($options);
         $this->tester->assertEquals($expected, $task->getCommand());
     }
 
-    public function testSuffixAddRemove()
+    public function testSuffixAddRemove(): void
     {
         $task = $this->taskBuilder->taskPhpmdLintFiles();
         $task
@@ -100,7 +100,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
         $this->tester->assertEquals($expected, $task->getSuffixes());
     }
 
-    public function testExcludePaths()
+    public function testExcludePaths(): void
     {
         $task = $this->taskBuilder->taskPhpmdLintFiles();
         $task
@@ -162,7 +162,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
     /**
      * @dataProvider casesRunSuccess
      */
-    public function testRunSuccess(array $expected, array $options)
+    public function testRunSuccess(array $expected, array $options): void
     {
         $expected += [
             'exitCode' => 0,

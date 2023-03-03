@@ -27,7 +27,7 @@ class PhpmdVersionTask extends PhpmdCliTask
     /**
      * {@inheritdoc}
      */
-    protected function runPrepareAssets()
+    protected function runPrepareAssets(): static
     {
         $parts = explode(' ', $this->processStdOutput) + [1 => ''];
         $this->assets['version'] = trim($parts[1]);

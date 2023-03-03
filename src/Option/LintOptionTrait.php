@@ -18,10 +18,7 @@ trait LintOptionTrait
         return $this->paths;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPaths(array $value)
+    public function setPaths(array $value): static
     {
         $this->paths = Utils::normalizeBooleanMap($value);
 
@@ -37,10 +34,7 @@ trait LintOptionTrait
         return $this->reportFormat;
     }
 
-    /**
-     * @return $this
-     */
-    public function setReportFormat(string $value)
+    public function setReportFormat(string $value): static
     {
         $this->reportFormat = $value;
 
@@ -56,10 +50,7 @@ trait LintOptionTrait
         return $this->ruleSetFileNames;
     }
 
-    /**
-     * @return $this
-     */
-    public function setRuleSetFileNames(array $value)
+    public function setRuleSetFileNames(array $value): static
     {
         $this->ruleSetFileNames = $value;
 
@@ -75,10 +66,7 @@ trait LintOptionTrait
         return $this->minimumPriority;
     }
 
-    /**
-     * @return $this
-     */
-    public function setMinimumPriority(int $value)
+    public function setMinimumPriority(int $value): static
     {
         $this->minimumPriority = $value;
 
@@ -94,10 +82,7 @@ trait LintOptionTrait
         return $this->inputFile;
     }
 
-    /**
-     * @return $this
-     */
-    public function setInputFile(string $value)
+    public function setInputFile(string $value): static
     {
         $this->inputFile = $value;
 
@@ -113,10 +98,7 @@ trait LintOptionTrait
         return $this->coverage;
     }
 
-    /**
-     * @return $this
-     */
-    public function setCoverage(bool $value)
+    public function setCoverage(bool $value): static
     {
         $this->coverage = $value;
 
@@ -132,10 +114,7 @@ trait LintOptionTrait
         return $this->reportFile;
     }
 
-    /**
-     * @return $this
-     */
-    public function setReportFile(string $value)
+    public function setReportFile(string $value): static
     {
         $this->reportFile = $value;
 
@@ -151,10 +130,7 @@ trait LintOptionTrait
         return $this->reportFileHtml;
     }
 
-    /**
-     * @return $this
-     */
-    public function setReportFileHtml(string $value)
+    public function setReportFileHtml(string $value): static
     {
         $this->reportFileHtml = $value;
 
@@ -170,10 +146,7 @@ trait LintOptionTrait
         return $this->reportFileText;
     }
 
-    /**
-     * @return $this
-     */
-    public function setReportFileText(string $value)
+    public function setReportFileText(string $value): static
     {
         $this->reportFileText = $value;
 
@@ -189,10 +162,7 @@ trait LintOptionTrait
         return $this->reportFileXml;
     }
 
-    /**
-     * @return $this
-     */
-    public function setReportFileXml(string $value)
+    public function setReportFileXml(string $value): static
     {
         $this->reportFileXml = $value;
 
@@ -208,30 +178,21 @@ trait LintOptionTrait
         return $this->suffixes;
     }
 
-    /**
-     * @return $this
-     */
-    public function setSuffixes(array $value)
+    public function setSuffixes(array $value): static
     {
         $this->suffixes = Utils::normalizeBooleanMap($value);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addSuffix(string $suffix)
+    public function addSuffix(string $suffix): static
     {
         $this->suffixes[$suffix] = true;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function removeSuffix(string $suffix)
+    public function removeSuffix(string $suffix): static
     {
         unset($this->suffixes[$suffix]);
 
@@ -247,20 +208,14 @@ trait LintOptionTrait
         return $this->excludePaths;
     }
 
-    /**
-     * @return $this
-     */
-    public function setExcludePaths(array $value)
+    public function setExcludePaths(array $value): static
     {
         $this->excludePaths = Utils::normalizeBooleanMap($value);
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addExcludePathsFromFile(string $fileName)
+    public function addExcludePathsFromFile(string $fileName): static
     {
         $lines = array_map('trim', file($fileName));
         $this->excludePaths = array_fill_keys(array_filter($lines), true) + $this->excludePaths;
@@ -268,20 +223,14 @@ trait LintOptionTrait
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addExcludePath(string $path)
+    public function addExcludePath(string $path): static
     {
         $this->excludePaths[$path] = true;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function removeExcludePath(string $path)
+    public function removeExcludePath(string $path): static
     {
         unset($this->excludePaths[$path]);
 
@@ -297,10 +246,7 @@ trait LintOptionTrait
         return $this->strict;
     }
 
-    /**
-     * @return $this
-     */
-    public function setStrict(bool $value)
+    public function setStrict(bool $value): static
     {
         $this->strict = $value;
 
@@ -316,10 +262,7 @@ trait LintOptionTrait
         return $this->ignoreViolationsOnExit;
     }
 
-    /**
-     * @return $this
-     */
-    public function setIgnoreViolationsOnExit(bool $value)
+    public function setIgnoreViolationsOnExit(bool $value): static
     {
         $this->ignoreViolationsOnExit = $value;
 
@@ -329,10 +272,7 @@ trait LintOptionTrait
 
     // endregion
 
-    /**
-     * @return $this
-     */
-    protected function setOptionsLint(array $options)
+    protected function setOptionsLint(array $options): static
     {
         foreach ($options as $name => $value) {
             switch ($name) {

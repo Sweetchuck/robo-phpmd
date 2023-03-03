@@ -39,10 +39,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this->phpExecutable;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPhpExecutable(string $value)
+    public function setPhpExecutable(string $value): static
     {
         $this->phpExecutable = $value;
 
@@ -58,10 +55,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this->phpmdExecutable;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPhpmdExecutable(string $value)
+    public function setPhpmdExecutable(string $value): static
     {
         $this->phpmdExecutable = $value;
 
@@ -71,10 +65,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
 
     // endregion
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         parent::setOptions($options);
 
@@ -89,9 +80,6 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getCommandOptions(): array
     {
         return [
@@ -170,20 +158,14 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return parent::run();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runHeader()
+    protected function runHeader(): static
     {
         $this->printTaskInfo($this->command);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runDoIt()
+    protected function runDoIt(): static
     {
         $process = $this
             ->getProcessHelper()
@@ -205,10 +187,7 @@ abstract class PhpmdCliTask extends PhpmdBaseTask implements
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runPrepareAssets()
+    protected function runPrepareAssets(): static
     {
         return $this;
     }

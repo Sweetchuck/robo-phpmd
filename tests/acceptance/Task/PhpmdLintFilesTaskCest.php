@@ -9,7 +9,7 @@ use Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles\PhpmdRoboFile;
 
 class PhpmdLintFilesTaskCest
 {
-    public function runPhpmdLintFiles(AcceptanceTester $tester)
+    public function runPhpmdLintFiles(AcceptanceTester $tester): void
     {
         $id = 'lintFiles';
         $tester->runRoboTask(
@@ -34,8 +34,8 @@ class PhpmdLintFilesTaskCest
             "'../../../vendor/phpmd/phpmd/src/main/resources/rulesets/codesize.xml'\n",
         ]);
 
-        $tester->assertEquals(0, $exitCode);
-        $tester->assertEquals('', $stdOutput);
+        $tester->assertSame(0, $exitCode);
+        $tester->assertSame('', $stdOutput);
         $tester->assertStringContainsString($expectedStdError, $stdError);
     }
 }

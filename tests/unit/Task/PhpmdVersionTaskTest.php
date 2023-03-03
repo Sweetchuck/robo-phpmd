@@ -38,7 +38,7 @@ class PhpmdVersionTaskTest extends Unit
     /**
      * @dataProvider casesGetCommand
      */
-    public function testGetCommand(string $expected, array $options)
+    public function testGetCommand(string $expected, array $options): void
     {
         $task = new PhpmdVersionTask();
         $task->setOptions($options);
@@ -68,7 +68,7 @@ class PhpmdVersionTaskTest extends Unit
     /**
      * @dataProvider casesRunSuccess
      */
-    public function testRunSuccess(array $expected, array $options, array $std)
+    public function testRunSuccess(array $expected, array $options, array $std): void
     {
         $std += [
             'exitCode' => 0,

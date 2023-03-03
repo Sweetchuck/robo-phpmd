@@ -1,7 +1,7 @@
 # Robo task wrapper for PHPMD (PHP Mess Detector)
 
-[![CircleCI](https://circleci.com/gh/Sweetchuck/robo-phpmd.svg?style=svg)](https://circleci.com/gh/Sweetchuck/robo-phpmd)
-[![codecov](https://codecov.io/gh/Sweetchuck/robo-phpmd/branch/2.x/graph/badge.svg?token=wvNpZCOuvu)](https://codecov.io/gh/Sweetchuck/robo-phpmd/2.x)
+[![CircleCI](https://circleci.com/gh/Sweetchuck/robo-phpmd/tree/3.x.svg?style=svg)](https://circleci.com/gh/Sweetchuck/robo-phpmd/?branch=3.x)
+[![codecov](https://codecov.io/gh/Sweetchuck/robo-phpmd/branch/3.x/graph/badge.svg?token=wvNpZCOuvu)](https://codecov.io/gh/Sweetchuck/robo-phpmd/3.x)
 
 
 ## Usage

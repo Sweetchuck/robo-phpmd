@@ -24,10 +24,7 @@ class PhpmdLintFilesTask extends PhpmdCliTask
         $this->fileSystem = new Filesystem();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         parent::setOptions($options);
         $this->setOptionsLint($options);
@@ -35,20 +32,14 @@ class PhpmdLintFilesTask extends PhpmdCliTask
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function runDoIt()
+    protected function runDoIt(): static
     {
         $this->prepareDirectoryReportFiles();
 
         return parent::runDoIt();
     }
 
-    /**
-     * @return $this
-     */
-    protected function prepareDirectoryReportFiles()
+    protected function prepareDirectoryReportFiles(): static
     {
         $fileNames = [
             $this->getReportFile(),
@@ -73,10 +64,7 @@ class PhpmdLintFilesTask extends PhpmdCliTask
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    protected function prepareDirectory(string $directory)
+    protected function prepareDirectory(string $directory): static
     {
         if ($directory && !$this->fileSystem->exists($directory)) {
             $this->fileSystem->mkdir($directory, 0777 - umask());
@@ -85,9 +73,6 @@ class PhpmdLintFilesTask extends PhpmdCliTask
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getCommandOptions(): array
     {
         return $this->getCommandOptionsLint() + parent::getCommandOptions();

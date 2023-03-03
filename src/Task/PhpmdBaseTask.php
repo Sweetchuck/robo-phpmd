@@ -32,10 +32,7 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
         return $this->workingDirectory;
     }
 
-    /**
-     * @return $this
-     */
-    public function setWorkingDirectory(string $value)
+    public function setWorkingDirectory(string $value): static
     {
         $this->workingDirectory = $value;
 
@@ -51,10 +48,7 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
         return $this->assetNamePrefix;
     }
 
-    /**
-     * @return $this
-     */
-    public function setAssetNamePrefix(string $value)
+    public function setAssetNamePrefix(string $value): static
     {
         $this->assetNamePrefix = $value;
 
@@ -64,10 +58,7 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
 
     // endregion
 
-    /**
-     * @return $this
-     */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         foreach ($options as $name => $value) {
             switch ($name) {
@@ -96,25 +87,16 @@ abstract class PhpmdBaseTask extends RoboBaseTask implements
             ->runReturn();
     }
 
-    /**
-     * @return $this
-     */
-    protected function runHeader()
+    protected function runHeader(): static
     {
         $this->printTaskInfo('Running');
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    abstract protected function runDoIt();
+    abstract protected function runDoIt(): static;
 
-    /**
-     * @return $this
-     */
-    protected function runPrepareAssets()
+    protected function runPrepareAssets(): static
     {
         return $this;
     }

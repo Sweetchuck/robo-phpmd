@@ -9,7 +9,7 @@ use Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles\PhpmdRoboFile;
 
 class PhpmdVersionTaskCest
 {
-    public function runPhpmdVersion(AcceptanceTester $tester)
+    public function runPhpmdVersion(AcceptanceTester $tester): void
     {
         $id = 'version';
         $tester->runRoboTask(
@@ -20,11 +20,11 @@ class PhpmdVersionTaskCest
 
         $expectedExitCode = 0;
         $exitCode = $tester->getRoboTaskExitCode($id);
-        $tester->assertEquals($expectedExitCode, $exitCode);
+        $tester->assertSame($expectedExitCode, $exitCode);
 
         $expectedStdOutput = "PHPMD 2.13.0\nThe version of the Php Mess Detector is: '2.13.0'\n";
         $stdOutput = $tester->getRoboTaskStdOutput($id);
-        $tester->assertEquals($expectedStdOutput, $stdOutput);
+        $tester->assertSame($expectedStdOutput, $stdOutput);
 
         $expectedStdError = " [PHP Mess Detector - Version] vendor/bin/phpmd --version\n";
         $stdError = $tester->getRoboTaskStdError($id);
