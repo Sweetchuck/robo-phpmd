@@ -21,16 +21,16 @@ executors:
         docker:
             -
                 name: 'main'
-                image: 'cimg/php:8.1'
-
-    php_plus1:
-        environment:
-            <<: *env_common
-            <<: *env_composer
-        docker:
-            -
-                name: 'main'
                 image: 'cimg/php:8.2'
+
+#    php_plus1:
+#        environment:
+#            <<: *env_common
+#            <<: *env_composer
+#        docker:
+#            -
+#                name: 'main'
+#                image: 'cimg/php:8.3'
 
 commands:
     install_php_extension_pcov:
@@ -95,7 +95,7 @@ commands:
             -
                 codecov/upload:
                     flags: 'unit'
-                    file: './tests/_log/machine/coverage/unit/coverage.php'
+                    file: './tests/_output/machine/coverage/unit/coverage.php'
             -
                 run:
                     name: 'Codeception - acceptance'
@@ -104,11 +104,11 @@ commands:
             -
                 codecov/upload:
                     flags: 'acceptance'
-                    file: './tests/_log/machine/coverage/acceptance/coverage.php'
+                    file: './tests/_output/machine/coverage/acceptance/coverage.php'
             -
                 store_test_results:
                     name: 'Store unit test results'
-                    path: './tests/_log/machine/junit'
+                    path: './tests/_output/machine/junit'
 
 jobs:
     build:
@@ -151,4 +151,4 @@ workflows:
                         parameters:
                             executor:
                                 - 'php_min'
-                                - 'php_plus1'
+#                                - 'php_plus1'

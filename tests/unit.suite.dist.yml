@@ -1,6 +1,5 @@
-
 actor: 'UnitTester'
 modules:
     enabled:
         - 'Asserts'
-        - '\Sweetchuck\Robo\PhpMessDetector\Test\Helper\Unit'
+        - '\Sweetchuck\Robo\PhpMessDetector\Tests\Helper\Unit'

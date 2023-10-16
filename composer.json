@@ -32,7 +32,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-mbstring": "*",
         "consolidation/robo": "^4.0",
         "symfony/filesystem": "^5.0 || ^6.0"
@@ -50,8 +50,8 @@
         "sweetchuck/git-hooks": "2.x-dev",
         "sweetchuck/robo-git": "3.x-dev",
         "sweetchuck/robo-phpcs": "3.x-dev",
-        "sweetchuck/utils": "1.x-dev",
-        "symfony/error-handler": "4.0 || ^5.0 || ^6.0",
+        "sweetchuck/utils": "2.x-dev",
+        "symfony/error-handler": "^5.0 || ^6.0",
         "symfony/finder": "^5.0 || ^6.0",
         "symfony/yaml": "^5.0 || ^6.0"
     },
@@ -65,9 +65,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Sweetchuck\\Robo\\PhpMessDetector\\Test\\": "tests/_support/",
             "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Acceptance\\": "tests/acceptance/",
-            "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Unit\\": "tests/unit/"
+            "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Unit\\": "tests/unit/",
+            "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\": "tests/_support/"
         }
     },
     "scripts": {},

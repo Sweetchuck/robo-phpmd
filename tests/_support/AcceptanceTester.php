@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Sweetchuck\Robo\PhpMessDetector\Test;
+namespace Sweetchuck\Robo\PhpMessDetector\Tests;
 
 /**
  * Inherited Methods

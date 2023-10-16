@@ -1,7 +1,6 @@
-
 actor: 'AcceptanceTester'
 modules:
     enabled:
         - 'Asserts'
         - '\Sweetchuck\Codeception\Module\RoboTaskRunner\RoboTaskRunner'
-        - '\Sweetchuck\Robo\PhpMessDetector\Test\Helper\Acceptance'
+        - '\Sweetchuck\Robo\PhpMessDetector\Tests\Helper\Acceptance'

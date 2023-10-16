@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles;
+namespace Sweetchuck\Robo\PhpMessDetector\Tests\Helper\RoboFiles;
 
 use Robo\State\Data;
 use Robo\Tasks;
