@@ -12,8 +12,8 @@ use Robo\Config\Config as RoboConfig;
 use Robo\Robo;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyProcessHelper;
-use Sweetchuck\Robo\PhpMessDetector\Test\Helper\Dummy\DummyTaskBuilder;
-use Sweetchuck\Robo\PhpMessDetector\Test\UnitTester;
+use Sweetchuck\Robo\PhpMessDetector\Tests\Helper\Dummy\DummyTaskBuilder;
+use Sweetchuck\Robo\PhpMessDetector\Tests\UnitTester;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\ErrorHandler\BufferingLogger;
 

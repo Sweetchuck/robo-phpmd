@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Acceptance\Task;
 
-use Sweetchuck\Robo\PhpMessDetector\Test\AcceptanceTester;
-use Sweetchuck\Robo\PhpMessDetector\Test\Helper\RoboFiles\PhpmdRoboFile;
+use Sweetchuck\Robo\PhpMessDetector\Tests\AcceptanceTester;
+use Sweetchuck\Robo\PhpMessDetector\Tests\Helper\RoboFiles\PhpmdRoboFile;
 
 class PhpmdVersionTaskCest
 {

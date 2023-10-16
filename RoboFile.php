@@ -15,10 +15,9 @@ use Sweetchuck\LintReport\Reporter\BaseReporter;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Sweetchuck\Robo\Phpcs\PhpcsTaskLoader;
 use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
-use Sweetchuck\Utils\Filter\ArrayFilterEnabled;
+use Sweetchuck\Utils\Filter\EnabledFilter;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
@@ -250,8 +249,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             'paths' => [
                 'tests' => 'tests',
                 'envs' => 'tests/_envs',
-                'log' => 'tests/_log',
-                'output' => 'tests/_log',
+                'output' => 'tests/_output',
             ],
         ];
         $dist = is_readable('codeception.dist.yml') ?
@@ -293,7 +291,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $withUnitReportHtml = $this->environmentType === 'dev';
         $withUnitReportXml = $this->environmentType === 'ci';
 
-        $logDir = $this->getLogDir();
+        $logDir = $this->getOutputDir();
 
         $cmdPattern = '';
         $cmdArgs = [];
@@ -433,7 +431,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             $options['lintReporters']['lintCheckstyleReporter'] = $this
                 ->getContainer()
                 ->get('lintCheckstyleReporter')
-                ->setDestination('tests/_log/machine/checkstyle/phpcs.psr2.xml');
+                ->setDestination('tests/_output/machine/checkstyle/phpcs.psr2.xml');
         }
 
         if ($this->gitHook === 'pre-commit') {
@@ -473,13 +471,13 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         return $task;
     }
 
-    protected function getLogDir(): string
+    protected function getOutputDir(): string
     {
         $this->initCodeceptionInfo();
 
-        return !empty($this->codeceptionInfo['paths']['log']) ?
-            $this->codeceptionInfo['paths']['log']
-            : 'tests/_log';
+        return !empty($this->codeceptionInfo['paths']['output']) ?
+            $this->codeceptionInfo['paths']['output']
+            : 'tests/_output';
     }
 
     protected function getCodeceptionSuiteNames(): array
@@ -526,7 +524,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     {
         return array_filter(
             $this->getConfig()->get('php.executables'),
-            new ArrayFilterEnabled(),
+            new EnabledFilter(),
         );
     }
 }

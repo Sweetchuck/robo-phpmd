@@ -2,9 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace Sweetchuck\Robo\PhpMessDetector\Test\Helper;
+namespace Sweetchuck\Robo\PhpMessDetector\Tests\Helper;
 
-class Unit extends \Codeception\Module
+use Codeception\Module;
+
+class Unit extends Module
 {
-
 }

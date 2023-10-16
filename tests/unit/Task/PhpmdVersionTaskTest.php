@@ -8,7 +8,7 @@ use Codeception\Test\Unit;
 use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdVersionTask;
 use Sweetchuck\Codeception\Module\RoboTaskRunner\DummyOutput as DummyOutput;
-use Sweetchuck\Robo\PhpMessDetector\Test\UnitTester;
+use Sweetchuck\Robo\PhpMessDetector\Tests\UnitTester;
 use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Process\Process;
 

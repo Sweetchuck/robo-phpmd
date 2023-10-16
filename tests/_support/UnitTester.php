@@ -2,7 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Sweetchuck\Robo\PhpMessDetector\Test;
+namespace Sweetchuck\Robo\PhpMessDetector\Tests;
+
+use Codeception\Actor;
 
 /**
  * Inherited Methods
@@ -19,7 +21,7 @@ namespace Sweetchuck\Robo\PhpMessDetector\Test;
  *
  * @SuppressWarnings(PHPMD)
 */
-class UnitTester extends \Codeception\Actor
+class UnitTester extends Actor
 {
     use _generated\UnitTesterActions;
 }
