@@ -2,7 +2,9 @@
 
 declare(strict_types = 1);
 
+use Consolidation\AnnotatedCommand\Attributes as Cli;
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use League\Container\Container as LeagueContainer;
 use NuvoleWeb\Robo\Task\Config\Robo\loadTasks as ConfigLoader;
 use Psr\Log\LoggerAwareInterface;
@@ -15,7 +17,6 @@ use Sweetchuck\LintReport\Reporter\BaseReporter;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Sweetchuck\Robo\Phpcs\PhpcsTaskLoader;
 use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
-use Sweetchuck\Utils\Filter\EnabledFilter;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -60,22 +61,15 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
      */
     protected string $environmentName = '';
 
-    /**
-     * RoboFile constructor.
-     */
     public function __construct()
     {
-        putenv('COMPOSER_DISABLE_XDEBUG_WARN=1');
         $this
             ->initComposerInfo()
             ->initEnvVarNamePrefix()
             ->initEnvironmentTypeAndName();
     }
 
-    /**
-     * @hook pre-command @initLintReporters
-     */
-    public function initLintReporters()
+    protected function initLintReporters(): void
     {
         $container = $this->getContainer();
         if (!($container instanceof LeagueContainer)) {
@@ -93,12 +87,22 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
     }
 
-    /**
-     * Git "pre-commit" hook callback.
-     *
-     * @initLintReporters
-     */
-    public function githookPreCommit(): CollectionBuilder
+    // region Command - githook:pre-commit
+    #[Cli\Hook(
+        type: HookManager::PRE_COMMAND_EVENT,
+        target: 'githook:pre-commit',
+    )]
+    public function cmdGitHookPreCommitPreExecute(/* CommandData $commandData */): void
+    {
+        $this->initLintReporters();
+    }
+
+    #[Cli\Command(name: 'githook:pre-commit')]
+    #[Cli\Help(
+        description: 'Git "pre-commit" hook callback.',
+        hidden: true,
+    )]
+    public function cmdGitHookPreCommitExecute(): CollectionBuilder
     {
         $this->gitHook = 'pre-commit';
 
@@ -108,13 +112,23 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             ->addTask($this->getTaskPhpcsLint())
             ->addTask($this->getTaskCodeceptRunSuites());
     }
+    // endregion
 
-    /**
-     * Run code style checkers.
-     *
-     * @initLintReporters
-     */
-    public function lint(): CollectionBuilder
+    // region Command - lint
+    #[Cli\Hook(
+        type: HookManager::PRE_COMMAND_EVENT,
+        target: 'lint',
+    )]
+    public function cmdLintPreCommand(/* CommandData $commandData */): void
+    {
+        $this->initLintReporters();
+    }
+
+    #[Cli\Command(name: 'lint')]
+    #[Cli\Help(
+        description: 'Runs static code analyzers',
+    )]
+    public function cmdLintExecute(): CollectionBuilder
     {
         return $this
             ->collectionBuilder()
@@ -122,49 +136,74 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             ->addTask($this->getTaskPhpcsLint())
             ->addTask($this->getTaskPhpmdLint());
     }
+    // endregion
 
-    /**
-     * @initLintReporters
-     */
-    public function lintPhpcs(): CollectionBuilder
+    // region Command - lint:phpcs
+    #[Cli\Hook(
+        type: HookManager::PRE_COMMAND_EVENT,
+        target: 'lint:phpcs',
+    )]
+    public function cmdLintPhpcsPreCommand(/* CommandData $commandData */): void
+    {
+        $this->initLintReporters();
+    }
+
+    #[Cli\Command(name: 'lint:phpcs')]
+    public function cmdLintPhpcsExecute(): CollectionBuilder
     {
         return $this->getTaskPhpcsLint();
     }
+    // endregion
 
-    /**
-     * @initLintReporters
-     */
-    public function lintPhpmd(): CollectionBuilder
+    // region Command - lint:phpmd
+    #[Cli\Hook(
+        type: HookManager::PRE_COMMAND_EVENT,
+        target: 'lint:phpmd',
+    )]
+    public function cmdLintPhpmdPreCommand(/* CommandData $commandData */): void
+    {
+        $this->initLintReporters();
+    }
+
+    #[Cli\Command(name: 'lint:phpmd')]
+    public function cmdLintPhpmdExecute(): CollectionBuilder
     {
         return $this->getTaskPhpmdLint();
     }
+    // endregion
 
-    /**
-     * @hook validate test
-     */
-    public function inputSuitNamesValidateOptionalArg(CommandData $commandData)
+    // region Command - test
+    #[Cli\Hook(
+        type: HookManager::ARGUMENT_VALIDATOR,
+        target: 'test',
+    )]
+    public function cmdTestValidate(CommandData $commandData): void
     {
         $args = $commandData->arguments();
         $this->validateArgCodeceptionSuiteNames($args['suiteNames']);
     }
 
-    /**
-     * Run the Robo unit tests.
-     */
-    public function test(
+    #[Cli\Command(name: 'test')]
+    #[Cli\Help(
+        description: 'Runs the selected tests',
+    )]
+    public function cmdTestExecute(
         array $suiteNames,
         array $options = [
             'debug' => false,
-        ]
+        ],
     ): CollectionBuilder {
         return $this->getTaskCodeceptRunSuites($suiteNames, $options);
     }
+    // endregion
 
     protected function errorOutput(): ?OutputInterface
     {
         $output = $this->output();
 
-        return ($output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
+        return ($output instanceof ConsoleOutputInterface)
+            ? $output->getErrorOutput()
+            : $output;
     }
 
     protected function initEnvVarNamePrefix(): static
@@ -176,12 +215,12 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
 
     protected function initEnvironmentTypeAndName(): static
     {
-        $this->environmentType = getenv($this->getEnvVarName('environment_type')) ?: '';
-        $this->environmentName = getenv($this->getEnvVarName('environment_name')) ?: '';
+        $this->environmentType = (string) getenv($this->getEnvVarName('environment_type'));
+        $this->environmentName = (string) getenv($this->getEnvVarName('environment_name'));
 
         if (!$this->environmentType) {
             if (getenv('CI') === 'true') {
-                // Travis, GitLab and CircleCI.
+                // CircleCI, Travis and GitLab.
                 $this->environmentType = 'ci';
             } elseif (getenv('JENKINS_HOME')) {
                 $this->environmentType = 'ci';
@@ -252,11 +291,11 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                 'output' => 'tests/_output',
             ],
         ];
-        $dist = is_readable('codeception.dist.yml') ?
-            Yaml::parse(file_get_contents('codeception.dist.yml') ?: '{}')
+        $dist = is_readable('codeception.dist.yml')
+            ? Yaml::parse(file_get_contents('codeception.dist.yml') ?: '{}')
             : [];
-        $local = is_readable('codeception.yml') ?
-            Yaml::parse(file_get_contents('codeception.yml') ?: '{}')
+        $local = is_readable('codeception.yml')
+            ? Yaml::parse(file_get_contents('codeception.yml') ?: '{}')
             : [];
 
         $this->codeceptionInfo = array_replace_recursive($default, $dist, $local);
@@ -270,7 +309,13 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
             $suiteNames = ['all'];
         }
 
-        $phpExecutables = $this->getEnabledPhpExecutables();
+        $phpExecutables = array_filter(
+            $this->getConfig()->get('php.executables'),
+            function (array $phpExecutable): bool {
+                return !empty($phpExecutable['enabled']);
+            },
+        );
+
         $cb = $this->collectionBuilder();
         foreach ($suiteNames as $suiteName) {
             foreach ($phpExecutables as $phpExecutable) {
@@ -334,7 +379,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
 
         if ($withCoverageHtml || $withCoverageXml) {
             $cmdPattern .= ' --coverage=%s';
-            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.serialized");
+            $cmdArgs[] = escapeshellarg("machine/coverage/$suite/coverage.php");
 
             $cb->addTask(
                 $this
@@ -435,12 +480,6 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         if ($this->gitHook === 'pre-commit') {
-            $phpcsTask = $this->taskPhpcsLintInput($options);
-            $phpcsTask->setOutput($this->output());
-            $phpcsTask
-                ->deferTaskConfiguration('setFiles', 'files')
-                ->deferTaskConfiguration('setIgnore', 'phpcsXml.exclude-patterns');
-
             return $this
                 ->collectionBuilder()
                 ->addTask($this
@@ -448,12 +487,18 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                     ->setAssetNamePrefix('phpcsXml.'))
                 ->addTask($this
                     ->taskGitListStagedFiles()
-                    ->setPaths(['*.php']))
+                    ->setPaths(['*.php' => true])
+                    ->setDiffFilter(['d' => false])
+                    ->setAssetNamePrefix('staged.'))
                 ->addTask($this
                     ->taskGitReadStagedFiles()
                     ->setCommandOnly(true)
-                    ->deferTaskConfiguration('setPaths', 'fileNames'))
-                ->addTask($phpcsTask);
+                    ->setWorkingDirectory('.')
+                    ->deferTaskConfiguration('setPaths', 'staged.fileNames'))
+                ->addTask($this
+                    ->taskPhpcsLintInput($options)
+                    ->deferTaskConfiguration('setFiles', 'files')
+                    ->deferTaskConfiguration('setIgnore', 'phpcsXml.exclude-patterns'));
         }
 
         return $this->taskPhpcsLintFiles($options);
@@ -475,8 +520,8 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     {
         $this->initCodeceptionInfo();
 
-        return !empty($this->codeceptionInfo['paths']['output']) ?
-            $this->codeceptionInfo['paths']['output']
+        return !empty($this->codeceptionInfo['paths']['output'])
+            ? $this->codeceptionInfo['paths']['output']
             : 'tests/_output';
     }
 
@@ -496,7 +541,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
                 $this->codeceptionSuiteNames[] = preg_replace(
                     '/\.suite(\.dist)?\.yml$/',
                     '',
-                    $suiteFile->getBasename()
+                    $suiteFile->getBasename(),
                 );
             }
         }
@@ -510,21 +555,10 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         if ($invalidSuiteNames) {
             throw new InvalidArgumentException(
                 'The following Codeception suite names are invalid: ' . implode(', ', $invalidSuiteNames),
-                1
+                1,
             );
         }
 
         return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getEnabledPhpExecutables(): array
-    {
-        return array_filter(
-            $this->getConfig()->get('php.executables'),
-            new EnabledFilter(),
-        );
     }
 }

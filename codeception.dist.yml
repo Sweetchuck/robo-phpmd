@@ -1,7 +1,7 @@
 
 namespace: 'Sweetchuck\Robo\PhpMessDetector\Tests'
 
-actor: Tester
+actor: 'Tester'
 
 paths:
     tests: 'tests'

@@ -31,29 +31,34 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "repositories": {
+        "nuvoleweb/robo-config": {
+            "type": "github",
+            "url": "https://github.com/Sweetchuck/robo-config.git"
+        }
+    },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "ext-mbstring": "*",
-        "consolidation/robo": "^4.0",
-        "symfony/filesystem": "^5.0 || ^6.0"
+        "consolidation/robo": "^5.0",
+        "symfony/filesystem": "^6.0 || ^7.0"
     },
     "require-dev": {
         "ext-json": "*",
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
         "mikey179/vfsstream": "^1.6",
-        "nuvoleweb/robo-config": "^3.0",
+        "nuvoleweb/robo-config": "4.x-dev",
         "pdepend/pdepend": "dev-master as 2.11.0",
         "phpmd/phpmd": "^2.6",
         "squizlabs/php_codesniffer": "^3.5",
-        "sweetchuck/codeception-module-robo-task-runner": "3.x-dev",
+        "sweetchuck/codeception-module-robo-task-runner": "4.x-dev",
         "sweetchuck/git-hooks": "2.x-dev",
-        "sweetchuck/robo-git": "3.x-dev",
-        "sweetchuck/robo-phpcs": "3.x-dev",
-        "sweetchuck/utils": "2.x-dev",
-        "symfony/error-handler": "^5.0 || ^6.0",
-        "symfony/finder": "^5.0 || ^6.0",
-        "symfony/yaml": "^5.0 || ^6.0"
+        "sweetchuck/robo-git": "4.x-dev",
+        "sweetchuck/robo-phpcs": "4.x-dev",
+        "symfony/error-handler": "^6.0 || ^7.0",
+        "symfony/finder": "^6.0 || ^7.0",
+        "symfony/yaml": "^6.0 || ^7.0"
     },
     "suggest": {
         "phpmd/phpmd": "After all the 'phpmd' executable has to be available."
@@ -69,7 +74,5 @@
             "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\Unit\\": "tests/unit/",
             "Sweetchuck\\Robo\\PhpMessDetector\\Tests\\": "tests/_support/"
         }
-    },
-    "scripts": {},
-    "scripts-descriptions": {}
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
+use Codeception\Attribute\DataProvider;
 use Codeception\Test\Unit;
 use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdVersionTask;
@@ -16,7 +17,7 @@ class PhpmdVersionTaskTest extends Unit
 {
     protected UnitTester $tester;
 
-    public function casesGetCommand(): array
+    public static function casesGetCommand(): array
     {
         return [
             'all-in-one' => [
@@ -35,17 +36,15 @@ class PhpmdVersionTaskTest extends Unit
         ];
     }
 
-    /**
-     * @dataProvider casesGetCommand
-     */
+    #[DataProvider('casesGetCommand')]
     public function testGetCommand(string $expected, array $options): void
     {
         $task = new PhpmdVersionTask();
         $task->setOptions($options);
-        $this->tester->assertEquals($expected, $task->getCommand());
+        $this->tester->assertSame($expected, $task->getCommand());
     }
 
-    public function casesRunSuccess(): array
+    public static function casesRunSuccess(): array
     {
         return [
             'basic' => [
@@ -65,9 +64,7 @@ class PhpmdVersionTaskTest extends Unit
         ];
     }
 
-    /**
-     * @dataProvider casesRunSuccess
-     */
+    #[DataProvider('casesRunSuccess')]
     public function testRunSuccess(array $expected, array $options, array $std): void
     {
         $std += [
@@ -113,7 +110,7 @@ class PhpmdVersionTaskTest extends Unit
 
         $result = $task->run();
 
-        $this->tester->assertEquals(
+        $this->tester->assertSame(
             $expected['exitCode'],
             $result->getExitCode(),
             'Result "exitCode"'
@@ -121,7 +118,7 @@ class PhpmdVersionTaskTest extends Unit
 
         $assertNamePrefix = $options['assetNamePrefix'] ?? '';
 
-        $this->tester->assertEquals(
+        $this->tester->assertSame(
             $expected['version'],
             $result["{$assertNamePrefix}version"],
             'PHPMD version'

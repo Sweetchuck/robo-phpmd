@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Sweetchuck\Robo\PhpMessDetector\Tests\Unit\Task;
 
+use Codeception\Attribute\DataProvider;
 use org\bovigo\vfs\vfsStream;
 use Robo\Robo;
 use Sweetchuck\Robo\PhpMessDetector\Task\PhpmdLintFilesTask;
@@ -14,7 +15,7 @@ use Symfony\Component\Process\Process;
 
 class PhpmdLintFilesTaskTest extends TaskTestBase
 {
-    public function casesGetCommand(): array
+    public static function casesGetCommand(): array
     {
         return [
             'all-in-one' => [
@@ -76,13 +77,11 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
         ];
     }
 
-    /**
-     * @dataProvider casesGetCommand
-     */
+    #[DataProvider('casesGetCommand')]
     public function testGetCommand(string $expected, array $options): void
     {
         $task = $this->taskBuilder->taskPhpmdLintFiles($options);
-        $this->tester->assertEquals($expected, $task->getCommand());
+        $this->tester->assertSame($expected, $task->getCommand());
     }
 
     public function testSuffixAddRemove(): void
@@ -97,7 +96,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
             'c' => true,
             'd' => true,
         ];
-        $this->tester->assertEquals($expected, $task->getSuffixes());
+        $this->tester->assertSame($expected, $task->getSuffixes());
     }
 
     public function testExcludePaths(): void
@@ -109,7 +108,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
             ->removeExcludePath('b')
             ->addExcludePath('d');
 
-        $this->tester->assertEquals(
+        $this->tester->assertSame(
             ['a' => true, 'c' => true, 'd' => true],
             $task->getExcludePaths()
         );
@@ -132,13 +131,13 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
         $fileName = $vfs->url() . '/' . __FUNCTION__ . '/exclude-pattern.txt';
         $task->addExcludePathsFromFile($fileName);
 
-        $this->tester->assertEquals(
+        $this->tester->assertSame(
             "phpmd 'text' --exclude 'src/,a,b,c,d'",
             $task->getCommand()
         );
     }
 
-    public function casesRunSuccess(): array
+    public static function casesRunSuccess(): array
     {
         $vfs = vfsStream::setup(
             'root',
@@ -159,9 +158,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
         ];
     }
 
-    /**
-     * @dataProvider casesRunSuccess
-     */
+    #[DataProvider('casesRunSuccess')]
     public function testRunSuccess(array $expected, array $options): void
     {
         $expected += [
@@ -207,7 +204,7 @@ class PhpmdLintFilesTaskTest extends TaskTestBase
 
         $result = $task->run();
 
-        $this->tester->assertEquals(
+        $this->tester->assertSame(
             $expected['exitCode'],
             $result->getExitCode(),
             'Result "exitCode"'
