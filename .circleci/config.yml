@@ -15,6 +15,7 @@ orbs:
 
 executors:
     php_min:
+        resource_class: 'small'
         environment:
             <<: *env_common
             <<: *env_composer
@@ -24,6 +25,7 @@ executors:
                 image: 'cimg/php:8.3'
 
 #    php_plus1:
+#        resource_class: 'small'
 #        environment:
 #            <<: *env_common
 #            <<: *env_composer
@@ -58,20 +60,18 @@ commands:
         steps:
             -
                 restore_cache:
-                    name: 'Composer - cache restore'
+                    name: 'Composer - Composer restore'
                     keys:
-                        - 'composer-{{ checksum "./composer.lock" }}-1'
-
+                        - 'composer-{{ checksum "./composer.lock" }}-2'
             -
                 run:
                     name: 'Composer - install'
-                    command: >
-                        composer install --no-progress
-
+                    command: |
+                        composer install --no-progress --ansi
             -
                 save_cache:
-                    name: 'Composer - cache save'
-                    key: 'composer-{{ checksum "./composer.lock" }}-1'
+                    name: 'Composer - Composer save'
+                    key: 'composer-{{ checksum "./composer.lock" }}-2'
                     paths:
                         - '~/.cache/composer/'
 

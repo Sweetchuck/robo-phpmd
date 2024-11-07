@@ -11,12 +11,14 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
+use Robo\Contract\TaskInterface;
 use Robo\Tasks;
 use Robo\Collection\CollectionBuilder;
 use Sweetchuck\LintReport\Reporter\BaseReporter;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Sweetchuck\Robo\Phpcs\PhpcsTaskLoader;
 use Sweetchuck\Robo\PhpMessDetector\PhpmdTaskLoader;
+use Sweetchuck\Robo\Phpstan\PhpstanTaskLoader;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -31,6 +33,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     use GitTaskLoader;
     use PhpcsTaskLoader;
     use PhpmdTaskLoader;
+    use PhpstanTaskLoader;
 
     protected array $composerInfo = [];
 
@@ -172,6 +175,23 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
     }
     // endregion
 
+    // region Command - lint:phpstan
+    #[Cli\Hook(
+        type: HookManager::PRE_COMMAND_EVENT,
+        target: 'lint:phpstan',
+    )]
+    public function cmdLintPhpstanPreCommand(/* CommandData $commandData */): void
+    {
+        $this->initLintReporters();
+    }
+
+    #[Cli\Command(name: 'lint:phpstan')]
+    public function cmdLintPhpstanExecute(): TaskInterface
+    {
+        return $this->getTaskPhpstanAnalyze();
+    }
+    // endregion
+
     // region Command - test
     #[Cli\Hook(
         type: HookManager::ARGUMENT_VALIDATOR,
@@ -310,7 +330,7 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         }
 
         $phpExecutables = array_filter(
-            $this->getConfig()->get('php.executables'),
+            (array) $this->getConfig()->get('php.executables'),
             function (array $phpExecutable): bool {
                 return !empty($phpExecutable['enabled']);
             },
@@ -514,6 +534,19 @@ class RoboFile extends Tasks implements LoggerAwareInterface, ConfigAwareInterfa
         $task->setOutput($this->output());
 
         return $task;
+    }
+
+    protected function getTaskPhpstanAnalyze(): TaskInterface
+    {
+        /** @var \Sweetchuck\LintReport\Reporter\VerboseReporter $verboseReporter */
+        $verboseReporter = $this->getContainer()->get('lintVerboseReporter');
+        $verboseReporter->setFilePathStyle('relative');
+
+        return $this
+            ->taskPhpstanAnalyze()
+            ->setNoProgress(true)
+            ->setErrorFormat('json')
+            ->addLintReporter('lintVerboseReporter', $verboseReporter);
     }
 
     protected function getOutputDir(): string

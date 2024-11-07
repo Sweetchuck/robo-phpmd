@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "665a23d75b245630cc5c0282f146e992",
+    "content-hash": "6f647cf1da42b6c57eb3f9a2a0e89380",
     "packages": [
         {
             "name": "consolidation/annotated-command",
@@ -2923,6 +2923,64 @@
             "time": "2023-12-11T08:22:20+00:00"
         },
         {
+            "name": "phpstan/phpstan",
+            "version": "1.12.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan.git",
+                "reference": "f6a60a4d66142b8156c9da923f1972657bc4748c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f6a60a4d66142b8156c9da923f1972657bc4748c",
+                "reference": "f6a60a4d66142b8156c9da923f1972657bc4748c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2|^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan-shim": "*"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
+            "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
+                "issues": "https://github.com/phpstan/phpstan/issues",
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/phpstan",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-11-06T19:06:49+00:00"
+        },
+        {
             "name": "phpunit/php-code-coverage",
             "version": "11.0.5",
             "source": {
@@ -4668,12 +4726,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/robo-phpcs.git",
-                "reference": "e5dbf7972a3b47cddefadf21a9127bf36f17bb0f"
+                "reference": "65157d381659c840bc877aebf4283064096fafcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/robo-phpcs/zipball/e5dbf7972a3b47cddefadf21a9127bf36f17bb0f",
-                "reference": "e5dbf7972a3b47cddefadf21a9127bf36f17bb0f",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-phpcs/zipball/65157d381659c840bc877aebf4283064096fafcc",
+                "reference": "65157d381659c840bc877aebf4283064096fafcc",
                 "shasum": ""
             },
             "require": {
@@ -4696,6 +4754,7 @@
                 "symfony/error-handler": "^6.2 || ^7.0",
                 "symfony/yaml": "^6.0 || ^7.0"
             },
+            "default-branch": true,
             "type": "robo-tasks",
             "autoload": {
                 "psr-4": {
@@ -4724,7 +4783,73 @@
                 "issues": "https://github.com/Sweetchuck/robo-phpcs/issues",
                 "source": "https://github.com/Sweetchuck/robo-phpcs"
             },
-            "time": "2024-08-04T10:57:02+00:00"
+            "time": "2024-11-07T20:11:10+00:00"
+        },
+        {
+            "name": "sweetchuck/robo-phpstan",
+            "version": "3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sweetchuck/robo-phpstan.git",
+                "reference": "478a797f7bd6fa59a4e92ba7267d57ab8a8ed7d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-phpstan/zipball/478a797f7bd6fa59a4e92ba7267d57ab8a8ed7d3",
+                "reference": "478a797f7bd6fa59a4e92ba7267d57ab8a8ed7d3",
+                "shasum": ""
+            },
+            "require": {
+                "consolidation/robo": "^5.0",
+                "ext-json": "*",
+                "php": ">=8.3",
+                "sweetchuck/lint-report": "1.x-dev"
+            },
+            "require-dev": {
+                "codeception/codeception": "^5.0",
+                "codeception/module-asserts": "^3.0",
+                "nuvoleweb/robo-config": "4.x-dev",
+                "phpmd/phpmd": "^2.11",
+                "phpstan/phpstan": "^1.10",
+                "squizlabs/php_codesniffer": "^3.5",
+                "sweetchuck/codeception-module-robo-task-runner": "4.x-dev",
+                "sweetchuck/git-hooks": "2.x-dev",
+                "sweetchuck/robo-git": "4.x-dev",
+                "sweetchuck/robo-phpcs": "4.x-dev",
+                "sweetchuck/robo-phpmd": "4.x-dev",
+                "symfony/error-handler": "^6.0 || ^7.0"
+            },
+            "suggest": {
+                "phpstan/phpstan": "*"
+            },
+            "type": "robo-tasks",
+            "autoload": {
+                "psr-4": {
+                    "Sweetchuck\\Robo\\Phpstan\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Andor",
+                    "homepage": "https://github.com/Sweetchuck",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Robo tasks for PHPStan",
+            "homepage": "https://github.com/Sweetchuck/robo-phpstan",
+            "keywords": [
+                "PHPStan",
+                "robo-tasks"
+            ],
+            "support": {
+                "issues": "https://github.com/Sweetchuck/robo-phpstan/issues",
+                "source": "https://github.com/Sweetchuck/robo-phpstan"
+            },
+            "time": "2024-08-04T21:15:24+00:00"
         },
         {
             "name": "sweetchuck/utils",
@@ -5318,7 +5443,8 @@
         "sweetchuck/codeception-module-robo-task-runner": 20,
         "sweetchuck/git-hooks": 20,
         "sweetchuck/robo-git": 20,
-        "sweetchuck/robo-phpcs": 20
+        "sweetchuck/robo-phpcs": 20,
+        "sweetchuck/robo-phpstan": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
